@@ -3,32 +3,13 @@
 
 #include "Character/RavenCharacterBase.h"
 
-// Sets default values
 ARavenCharacterBase::ARavenCharacterBase()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	PrimaryActorTick.bCanEverTick = false;
 }
 
-// Called when the game starts or when spawned
-void ARavenCharacterBase::BeginPlay()
+UAbilitySystemComponent* ARavenCharacterBase::GetAbilitySystemComponent() const
 {
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ARavenCharacterBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void ARavenCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	return AbilitySystemComponent;
 }
 
