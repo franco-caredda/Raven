@@ -7,6 +7,12 @@
 #include "AbilitySystemInterface.h"
 #include "RavenCharacterBase.generated.h"
 
+class URavenAttributeSet;
+class UAttributeSet;
+class UGameplayAbility;
+
+struct FGameplayAbilitySpecHandle;
+
 UCLASS()
 class RAVEN_API ARavenCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
@@ -17,6 +23,17 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 protected:
-	UPROPERTY()
+	virtual void GrantDefaultAbilities();
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
+	TObjectPtr<UAttributeSet> AttributeSet;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability System")
+	TArray<TSubclassOf<UGameplayAbility>> DefaultGameplayAbilities;
+private:
+	UPROPERTY()
+	TArray<FGameplayAbilitySpecHandle> GrantedAbilities;
 };

@@ -3,9 +3,11 @@
 
 #include "Character/RavenCharacterPlayable.h"
 
-#include "Camera/CameraComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "AbilitySystemComponent.h"
 
+#include "Camera/CameraComponent.h"
+
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 #include "Player/RavenPlayerState.h"
@@ -33,6 +35,8 @@ void ARavenCharacterPlayable::PossessedBy(AController* NewController)
 
 	ARavenPlayerState* RavenPlayerState = GetPlayerStateChecked<ARavenPlayerState>();
 	AbilitySystemComponent = RavenPlayerState->GetAbilitySystemComponent();
+
+	AbilitySystemComponent->InitAbilityActorInfo(RavenPlayerState, this);
 }
 
 void ARavenCharacterPlayable::Tick(float DeltaTime)

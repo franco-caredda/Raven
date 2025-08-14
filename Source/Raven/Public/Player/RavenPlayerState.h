@@ -7,6 +7,9 @@
 #include "AbilitySystemInterface.h"
 #include "RavenPlayerState.generated.h"
 
+class UGameplayEffect;
+class UAttributeSet;
+
 /**
  * 
  */
@@ -18,7 +21,25 @@ public:
 	ARavenPlayerState();
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 protected:
-	UPROPERTY()
+	virtual void BeginPlay() override;
+
+	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass);
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
+	TObjectPtr<UAttributeSet> AttributeSet;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
+	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
+	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributesClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
+	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
 };
