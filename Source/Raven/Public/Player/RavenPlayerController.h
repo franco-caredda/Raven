@@ -8,8 +8,10 @@
 
 class UInputMappingContext;
 class UInputAction;
+class UAbilityInputMappingDataAsset;
 
 struct FInputActionValue;
+struct FGameplayTag;
 
 /**
  * 
@@ -35,13 +37,13 @@ protected:
 	void OnJumpActionCompleted(const FInputActionValue& Value);
 
 	UFUNCTION()
-	void OnSprintActionStarted(const FInputActionValue& Value);
+	void OnAbilityActionStarted(FGameplayTag GameplayTag);
 
 	UFUNCTION()
-	void OnSprintActionCompleted(const FInputActionValue& Value);
-
+	void OnAbilityActionTriggered(FGameplayTag GameplayTag);
+	
 	UFUNCTION()
-	void OnDodgeActionTriggered(const FInputActionValue& Value);
+	void OnAbilityActionCompleted(FGameplayTag GameplayTag);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
@@ -55,9 +57,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input|Actions")
 	TObjectPtr<UInputAction> JumpAction;
 
-	UPROPERTY(EditDefaultsOnly, Category="Input|Actions")
-	TObjectPtr<UInputAction> SprintAction;
-
-	UPROPERTY(EditDefaultsOnly, Category="Input|Actions")
-	TObjectPtr<UInputAction> DodgeAction;
+	UPROPERTY(EditDefaultsOnly, Category="Input|Actions|Abilities")
+	TObjectPtr<UAbilityInputMappingDataAsset> AbilityInputMapping;
 };

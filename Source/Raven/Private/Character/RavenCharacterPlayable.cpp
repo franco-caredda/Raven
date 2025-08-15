@@ -37,6 +37,8 @@ void ARavenCharacterPlayable::PossessedBy(AController* NewController)
 	AbilitySystemComponent = RavenPlayerState->GetAbilitySystemComponent();
 
 	AbilitySystemComponent->InitAbilityActorInfo(RavenPlayerState, this);
+
+	GrantDefaultAbilities();
 }
 
 void ARavenCharacterPlayable::Tick(float DeltaTime)

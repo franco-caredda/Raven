@@ -4,6 +4,7 @@
 #include "Character/RavenCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/RavenAbilitySystemComponent.h"
 
 ARavenCharacterBase::ARavenCharacterBase()
 {
@@ -22,12 +23,10 @@ void ARavenCharacterBase::GrantDefaultAbilities()
 		return;
 	}
 
-	for (TSubclassOf<UGameplayAbility> AbilityClass : DefaultGameplayAbilities)
+	if (URavenAbilitySystemComponent* RavenAbilitySystemComponent =
+		Cast<URavenAbilitySystemComponent>(AbilitySystemComponent))
 	{
-		FGameplayAbilitySpec AbilitySpec =
-			AbilitySystemComponent->BuildAbilitySpecFromClass(AbilityClass, 1,
-				0);
-		GrantedAbilities.Add(AbilitySystemComponent->GiveAbility(AbilitySpec));
+		RavenAbilitySystemComponent->GrantAbilities(DefaultGameplayAbilities);
 	}
 }
 

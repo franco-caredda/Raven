@@ -33,7 +33,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System")
 	TArray<TSubclassOf<UGameplayAbility>> DefaultGameplayAbilities;
-private:
-	UPROPERTY()
-	TArray<FGameplayAbilitySpecHandle> GrantedAbilities;
 };

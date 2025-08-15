@@ -3,13 +3,13 @@
 
 #include "Player/RavenPlayerState.h"
 
-#include "AbilitySystemComponent.h"
+#include "AbilitySystem/RavenAbilitySystemComponent.h"
 
 #include "AbilitySystem/AttributeSet/RavenAttributeSet.h"
 
 ARavenPlayerState::ARavenPlayerState()
 {
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent = CreateDefaultSubobject<URavenAbilitySystemComponent>("AbilitySystemComponent");
 	AttributeSet = CreateDefaultSubobject<URavenAttributeSet>(TEXT("AttributeSet"));
 }
 
