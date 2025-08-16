@@ -8,6 +8,7 @@
 #include "AbilityInputMappingDataAsset.generated.h"
 
 class UInputAction;
+enum class EAbilityInputID : uint8;
 
 USTRUCT(BlueprintType)
 struct FAbilityInputMapping
@@ -18,7 +19,7 @@ struct FAbilityInputMapping
 	TObjectPtr<UInputAction> InputAction;
 
 	UPROPERTY(EditAnywhere)
-	FGameplayTag MappingTag;
+	EAbilityInputID MappingID;
 };
 
 /**
@@ -29,7 +30,7 @@ class RAVEN_API UAbilityInputMappingDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 public:
-	UInputAction* FindInputActionByTag(const FGameplayTag& Tag);
+	UInputAction* FindInputActionByTag(EAbilityInputID InputID);
 
 	FORCEINLINE const TArray<FAbilityInputMapping>& GetInputMappings() const { return InputMappings; }
 protected:

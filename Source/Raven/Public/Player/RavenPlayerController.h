@@ -6,12 +6,15 @@
 #include "GameFramework/PlayerController.h"
 #include "RavenPlayerController.generated.h"
 
+class URavenAbilitySystemComponent;
 class UInputMappingContext;
 class UInputAction;
 class UAbilityInputMappingDataAsset;
 
 struct FInputActionValue;
 struct FGameplayTag;
+
+enum class EAbilityInputID : uint8;
 
 /**
  * 
@@ -37,13 +40,13 @@ protected:
 	void OnJumpActionCompleted(const FInputActionValue& Value);
 
 	UFUNCTION()
-	void OnAbilityActionStarted(FGameplayTag GameplayTag);
+	void OnAbilityActionStarted(EAbilityInputID InputID);
 
 	UFUNCTION()
-	void OnAbilityActionTriggered(FGameplayTag GameplayTag);
+	void OnAbilityActionTriggered(EAbilityInputID InputID);
 	
 	UFUNCTION()
-	void OnAbilityActionCompleted(FGameplayTag GameplayTag);
+	void OnAbilityActionCompleted(EAbilityInputID InputID);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
@@ -59,4 +62,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input|Actions|Abilities")
 	TObjectPtr<UAbilityInputMappingDataAsset> AbilityInputMapping;
+private:
+	UPROPERTY()
+	TObjectPtr<URavenAbilitySystemComponent> AbilitySystemComponent;
 };

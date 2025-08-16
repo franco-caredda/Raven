@@ -3,12 +3,12 @@
 
 #include "Input/AbilityInputMappingDataAsset.h"
 
-UInputAction* UAbilityInputMappingDataAsset::FindInputActionByTag(const FGameplayTag& Tag)
+UInputAction* UAbilityInputMappingDataAsset::FindInputActionByTag(EAbilityInputID InputID)
 {
 	FAbilityInputMapping* InputMapping =
-		InputMappings.FindByPredicate([&Tag](const FAbilityInputMapping& InputMapping)
+		InputMappings.FindByPredicate([&InputID](const FAbilityInputMapping& CurrentInputMapping)
 		{
-			return InputMapping.InputAction && InputMapping.MappingTag.MatchesTagExact(Tag);
+			return CurrentInputMapping.InputAction && CurrentInputMapping.MappingID == InputID;
 		});
 
 	if (InputMapping)
