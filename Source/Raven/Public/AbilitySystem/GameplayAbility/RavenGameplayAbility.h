@@ -8,6 +8,21 @@
 
 struct FGameplayTag;
 
+UENUM(BlueprintType)
+enum class EAbilityInputID : uint8
+{
+	None = 0,
+	AbilityJump = 1,
+	AbilityLightAttack = 2,
+	AbilityHeavyAttack = 3,
+	AbilityShield = 4,
+	AbilityUse = 5,
+	AbilityDodge = 6,
+	AbilitySprint = 7,
+
+	MAX
+};
+
 /**
  * 
  */
@@ -16,8 +31,8 @@ class RAVEN_API URavenGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 public:
-	FORCEINLINE FGameplayTag GetInputTag() const { return InputTag; }
+	FORCEINLINE EAbilityInputID GetInputID() const { return InputID; }
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
-	FGameplayTag InputTag;
+	EAbilityInputID InputID;
 };

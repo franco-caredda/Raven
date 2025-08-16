@@ -5,57 +5,26 @@
 
 #include "AbilitySystem/GameplayAbility/RavenGameplayAbility.h"
 
-void URavenAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
+void URavenAbilitySystemComponent::HoldInputForAbilityByID(EAbilityInputID InputID)
 {
-	Super::AbilitySpecInputPressed(Spec);
-
-	if (Spec.IsActive())
+	if (InputID == EAbilityInputID::None || InputID == EAbilityInputID::MAX)
 	{
-		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle,
-			Spec.Ability->GetCurrentActivationInfo().GetActivationPredictionKey());
+		return;
 	}
+
+	// This function might not notify the server that an ability was activated.
+	// Providing an RPC might be needed.
+	AbilityLocalInputPressed(static_cast<uint8>(InputID));
 }
 
-void URavenAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& Spec)
+void URavenAbilitySystemComponent::ReleaseInputForAbilityByID(EAbilityInputID InputID)
 {
-	Super::AbilitySpecInputReleased(Spec);
-
-	if (Spec.IsActive())
+	if (InputID == EAbilityInputID::None || InputID == EAbilityInputID::MAX)
 	{
-		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle,
-			Spec.Ability->GetCurrentActivationInfo().GetActivationPredictionKey());
+		return;
 	}
-}
-
-void URavenAbilitySystemComponent::HoldInputForAbilityByTag(const FGameplayTag& InputTag)
-{
-	TArray<FGameplayAbilitySpec>& ActivableAbilities = GetActivatableAbilities();
-
-	for (FGameplayAbilitySpec& AbilitySpec : ActivableAbilities)
-	{
-		if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag))
-		{
-			AbilitySpecInputPressed(AbilitySpec);
-			TryActivateAbility(AbilitySpec.Handle);
-
-			return;
-		}
-	}
-}
-
-void URavenAbilitySystemComponent::ReleaseInputForAbilityByTag(const FGameplayTag& InputTag)
-{
-	TArray<FGameplayAbilitySpec>& ActivableAbilities = GetActivatableAbilities();
-
-	for (FGameplayAbilitySpec& AbilitySpec : ActivableAbilities)
-	{
-		if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag))
-		{
-			AbilitySpecInputReleased(AbilitySpec);
-
-			return;
-		}
-	}
+	
+	AbilityLocalInputReleased(static_cast<uint8>(InputID));
 }
 
 void URavenAbilitySystemComponent::GrantAbilities(const TArray<TSubclassOf<UGameplayAbility>>& GameplayAbilities)
@@ -66,7 +35,7 @@ void URavenAbilitySystemComponent::GrantAbilities(const TArray<TSubclassOf<UGame
 
 		if (const URavenGameplayAbility* RavenGameplayAbility = Cast<URavenGameplayAbility>(AbilitySpec.Ability))
 		{
-			AbilitySpec.GetDynamicSpecSourceTags().AddTag(RavenGameplayAbility->GetInputTag());
+			AbilitySpec.InputID = static_cast<int32>(RavenGameplayAbility->GetInputID());
 			GiveAbility(AbilitySpec);
 		}
 	}

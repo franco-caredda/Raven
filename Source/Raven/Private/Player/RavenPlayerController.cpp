@@ -2,8 +2,10 @@
 
 
 #include "Player/RavenPlayerController.h"
+#include "Player/RavenPlayerState.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemInterface.h"
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -27,6 +29,11 @@ void ARavenPlayerController::BeginPlay()
 	{
 		InputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
+
+	ARavenPlayerState* aPlayerState = GetPlayerState<ARavenPlayerState>();
+	
+	AbilitySystemComponent =
+		Cast<URavenAbilitySystemComponent>(aPlayerState->GetAbilitySystemComponent());
 }
 
 void ARavenPlayerController::SetupInputComponent()
@@ -39,20 +46,15 @@ void ARavenPlayerController::SetupInputComponent()
 		&ARavenPlayerController::OnMoveActionTriggered);
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
 		&ARavenPlayerController::OnLookActionTriggered);
-	
-	// EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this,
-	// 	&ARavenPlayerController::OnJumpActionStarted);
-	// EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this,
-	// 	&ARavenPlayerController::OnJumpActionCompleted);
 
 	for (const FAbilityInputMapping& InputMapping : AbilityInputMapping->GetInputMappings())
 	{
 		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Started, this,
-			&ARavenPlayerController::OnAbilityActionStarted, InputMapping.MappingTag);
+			&ARavenPlayerController::OnAbilityActionStarted, InputMapping.MappingID);
 		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Triggered, this,
-			&ARavenPlayerController::OnAbilityActionTriggered, InputMapping.MappingTag);
+			&ARavenPlayerController::OnAbilityActionTriggered, InputMapping.MappingID);
 		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Completed, this,
-			&ARavenPlayerController::OnAbilityActionCompleted, InputMapping.MappingTag);
+			&ARavenPlayerController::OnAbilityActionCompleted, InputMapping.MappingID);
 	}
 }
 
@@ -98,32 +100,23 @@ void ARavenPlayerController::OnJumpActionCompleted(const FInputActionValue& Valu
 }
 
 // Notice: if an action has some modifiers on it, this method is not a suitable place for the ability activation 
-void ARavenPlayerController::OnAbilityActionStarted(FGameplayTag GameplayTag)
+void ARavenPlayerController::OnAbilityActionStarted(EAbilityInputID InputID)
 {
-	APawn* aPawn = GetPawn();
-
-	URavenAbilitySystemComponent* AbilitySystemComponent =
-		CastChecked<URavenAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(aPawn));
-
-	AbilitySystemComponent->HoldInputForAbilityByTag(GameplayTag);
+//	AbilitySystemComponent->HoldInputForAbilityByID(InputID);
 }
 
-void ARavenPlayerController::OnAbilityActionTriggered(FGameplayTag GameplayTag)
+void ARavenPlayerController::OnAbilityActionTriggered(EAbilityInputID InputID)
 {
-	APawn* aPawn = GetPawn();
-	
-	URavenAbilitySystemComponent* AbilitySystemComponent =
-		CastChecked<URavenAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(aPawn));
-
-	AbilitySystemComponent->HoldInputForAbilityByTag(GameplayTag);
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->HoldInputForAbilityByID(InputID);
+	}
 }
 
-void ARavenPlayerController::OnAbilityActionCompleted(FGameplayTag GameplayTag)
+void ARavenPlayerController::OnAbilityActionCompleted(EAbilityInputID InputID)
 {
-	APawn* aPawn = GetPawn();
-	
-	URavenAbilitySystemComponent* AbilitySystemComponent =
-		CastChecked<URavenAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(aPawn));
-
-	AbilitySystemComponent->ReleaseInputForAbilityByTag(GameplayTag);
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->ReleaseInputForAbilityByID(InputID);
+	}
 }
