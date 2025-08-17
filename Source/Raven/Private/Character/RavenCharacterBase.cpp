@@ -30,3 +30,35 @@ void ARavenCharacterBase::GrantDefaultAbilities()
 	}
 }
 
+void ARavenCharacterBase::ApplyEffect(TSubclassOf<UGameplayEffect> GameplayEffectClass)
+{
+	FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+		
+	FGameplayEffectSpecHandle EffectSpecHandle =
+		AbilitySystemComponent->MakeOutgoingSpec(GameplayEffectClass, 1, ContextHandle);
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data);
+}
+
+void ARavenCharacterBase::ApplyDefaultEffects()
+{
+	if (!AbilitySystemComponent)
+	{
+		return;
+	}
+
+	for (TSubclassOf<UGameplayEffect> GameplayEffectClass : DefaultGameplayEffects)
+	{
+		ApplyEffect(GameplayEffectClass);
+	}
+}
+
+void ARavenCharacterBase::InitEffects()
+{
+	ApplyEffect(DefaultPrimaryAttributesClass);
+	ApplyEffect(DefaultSecondaryAttributesClass);
+	ApplyEffect(DefaultVitalAttributesClass);
+
+	ApplyDefaultEffects();
+}
+

@@ -4,6 +4,7 @@
 #include "Character/RavenCharacterPlayable.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AttributeSet/RavenAttributeSet.h"
 
 #include "Camera/CameraComponent.h"
 
@@ -35,10 +36,18 @@ void ARavenCharacterPlayable::PossessedBy(AController* NewController)
 
 	ARavenPlayerState* RavenPlayerState = GetPlayerStateChecked<ARavenPlayerState>();
 	AbilitySystemComponent = RavenPlayerState->GetAbilitySystemComponent();
-
+	AttributeSet = RavenPlayerState->GetAttributeSet();
+	
 	AbilitySystemComponent->InitAbilityActorInfo(RavenPlayerState, this);
 
+	URavenAttributeSet* RavenAttributeSet = CastChecked<URavenAttributeSet>(AttributeSet);
+
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
+		RavenAttributeSet->GetMovementSpeedAttribute()).AddUObject(this,
+			&ARavenCharacterPlayable::OnMovementSpeedChanged);
+	
 	GrantDefaultAbilities();
+	InitEffects();
 }
 
 void ARavenCharacterPlayable::Tick(float DeltaTime)
@@ -47,4 +56,10 @@ void ARavenCharacterPlayable::Tick(float DeltaTime)
 
 	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
 	CharacterMovementComponent->bOrientRotationToMovement = CharacterMovementComponent->IsMovingOnGround();
+}
+
+void ARavenCharacterPlayable::OnMovementSpeedChanged(const FOnAttributeChangeData& AttributeChangeData)
+{
+	const float NewMovementSpeed = AttributeChangeData.NewValue;
+	CastChecked<UCharacterMovementComponent>(GetMovementComponent())->MaxWalkSpeed = NewMovementSpeed;
 }

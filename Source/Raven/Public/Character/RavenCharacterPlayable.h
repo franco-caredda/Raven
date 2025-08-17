@@ -6,6 +6,7 @@
 #include "Character/RavenCharacterBase.h"
 #include "RavenCharacterPlayable.generated.h"
 
+struct FOnAttributeChangeData;
 class USpringArmComponent;
 class UCameraComponent;
 
@@ -21,6 +22,8 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void Tick(float DeltaTime) override;
+private:
+	void OnMovementSpeedChanged(const FOnAttributeChangeData& AttributeChangeData);
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;

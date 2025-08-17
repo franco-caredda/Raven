@@ -24,22 +24,9 @@ public:
 
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 protected:
-	virtual void BeginPlay() override;
-
-	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass);
-protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
 	TObjectPtr<UAttributeSet> AttributeSet;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
-	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
-	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributesClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
-	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
 };

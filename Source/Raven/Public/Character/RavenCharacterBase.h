@@ -7,13 +7,14 @@
 #include "AbilitySystemInterface.h"
 #include "RavenCharacterBase.generated.h"
 
+class UGameplayEffect;
 class URavenAttributeSet;
 class UAttributeSet;
 class UGameplayAbility;
 
 struct FGameplayAbilitySpecHandle;
 
-UCLASS()
+UCLASS(Abstract)
 class RAVEN_API ARavenCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
@@ -23,7 +24,12 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 protected:
-	virtual void GrantDefaultAbilities();
+	void GrantDefaultAbilities();
+	
+	void ApplyEffect(TSubclassOf<UGameplayEffect> GameplayEffectClass);
+	void InitEffects();
+private:
+	void ApplyDefaultEffects();
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
@@ -33,4 +39,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System")
 	TArray<TSubclassOf<UGameplayAbility>> DefaultGameplayAbilities;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability System")
+	TArray<TSubclassOf<UGameplayEffect>> DefaultGameplayEffects;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
+	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
+	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributesClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
+	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
 };

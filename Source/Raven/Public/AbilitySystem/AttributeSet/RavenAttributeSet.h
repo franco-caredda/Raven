@@ -25,12 +25,16 @@ public:
 	ATTRIBUTE_ACCESSORS_BASIC(URavenAttributeSet, Strength)
 	ATTRIBUTE_ACCESSORS_BASIC(URavenAttributeSet, MaxHealth)
 	ATTRIBUTE_ACCESSORS_BASIC(URavenAttributeSet, MaxStamina)
+	ATTRIBUTE_ACCESSORS_BASIC(URavenAttributeSet, MovementSpeed)
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Vital")
 	FGameplayAttributeData Health;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Vital")
 	FGameplayAttributeData Stamina;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Vital")
+	FGameplayAttributeData MovementSpeed;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Primary")
 	FGameplayAttributeData Strength;

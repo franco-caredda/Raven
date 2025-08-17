@@ -12,16 +12,19 @@ void FRavenGameplayTagRegistry::InitRegistry()
 {
 	UGameplayTagsManager& GameplayTagsManager = UGameplayTagsManager::Get();
 	
-	RavenAbilityInputJump = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Input.Jump"),
-		FString("Input for the jump ability"));
-	RavenAbilityInputDodge = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Input.Dodge"),
-		FString("Input for the dodge ability"));
-	RavenAbilityInputLightAttack = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Input.LightAttack"),
-		FString("Input for the light attack"));
-	RavenAbilityInputHeavyAttack = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Input.HeavyAttack"),
-		FString("Input for the heavy attack"));
-	RavenAbilityInputShield = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Input.Shield"),
-		FString("Input for shielding"));
-	RavenAbilityInputUse = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Input.Use"),
-		FString("Input for using equipped items"));
+	RavenAbilityJump = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Jump"),
+		FString("Jump ability"));
+	RavenAbilityDodge = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Dodge"),
+		FString("Dodge ability"));
+	RavenAbilityLightAttack = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.LightAttack"),
+		FString("Light attack"));
+	RavenAbilityHeavyAttack = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.HeavyAttack"),
+		FString("Heavy attack"));
+	RavenAbilityShield = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Shield"),
+		FString("Shielding"));
+	RavenAbilityUse = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Use"),
+		FString("Equipped items"));
+
+	RavenEffectDrainStamina = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Effect.Drain.Stamina"),
+		FString("Used in the effects that have to block stamina restoring and have a continuous cost"));
 }
