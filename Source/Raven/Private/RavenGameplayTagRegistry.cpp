@@ -4,8 +4,15 @@
 #include "RavenGameplayTagRegistry.h"
 #include "GameplayTagsManager.h"
 
+FRavenGameplayTagRegistry FRavenGameplayTagRegistry::GameplayTagRegistry;
+
 FRavenGameplayTagRegistry::FRavenGameplayTagRegistry()
 {
+}
+
+FRavenGameplayTagRegistry& FRavenGameplayTagRegistry::Get() noexcept
+{
+	return GameplayTagRegistry;
 }
 
 void FRavenGameplayTagRegistry::InitRegistry()
@@ -27,4 +34,8 @@ void FRavenGameplayTagRegistry::InitRegistry()
 
 	RavenEffectDrainStamina = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Effect.Drain.Stamina"),
 		FString("Used in the effects that have to block stamina restoring and have a continuous cost"));
+	RavenEffectAbilityCancelable = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Effect.Ability.Cancelable"),
+		FString("Used in Abilities' CancelAbilitiesWithTag container to cancel abilities with this tag"));
+	RavenAbilityInputBuffered = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Input.Buffered"),
+		FString("Indicates whether this ability is put into the buffer or no"));
 }

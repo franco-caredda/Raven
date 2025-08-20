@@ -32,6 +32,8 @@
 class RAVEN_API FRavenGameplayTagRegistry
 {
 public:
+	static FRavenGameplayTagRegistry& Get() noexcept;
+	
 	void InitRegistry();
 
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Jump)
@@ -41,9 +43,12 @@ public:
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Shield)
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Use)
 
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Effect, Ability, Cancelable)
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Effect, Drain, Stamina)
+
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Ability, Input, Buffered)
 private:
 	FRavenGameplayTagRegistry();
 
-	friend class URavenAssetManager;
+	static FRavenGameplayTagRegistry GameplayTagRegistry;
 };

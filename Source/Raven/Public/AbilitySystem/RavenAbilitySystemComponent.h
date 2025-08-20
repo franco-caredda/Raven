@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "Containers/Deque.h"
+#include "GameplayAbility/RavenGameplayAbility.h"
 #include "RavenAbilitySystemComponent.generated.h"
 
 struct FGameplayTag;
-
-enum class EAbilityInputID : uint8;
 
 /**
  * 
@@ -18,6 +18,8 @@ class RAVEN_API URavenAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
 public:
+	bool TryActivateAbilityByID(EAbilityInputID InputID);
+	
 	void HoldInputForAbilityByID(EAbilityInputID InputID);
 	void ReleaseInputForAbilityByID(EAbilityInputID InputID);
 

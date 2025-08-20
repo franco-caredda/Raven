@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "RavenPlayerController.generated.h"
 
+class UAbilityBufferComponent;
 class URavenAbilitySystemComponent;
 class UInputMappingContext;
 class UInputAction;
@@ -23,6 +24,8 @@ UCLASS()
 class RAVEN_API ARavenPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+public:
+	ARavenPlayerController();
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -62,6 +65,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input|Actions|Abilities")
 	TObjectPtr<UAbilityInputMappingDataAsset> AbilityInputMapping;
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UAbilityBufferComponent> AbilityBufferComponent;
 private:
 	UPROPERTY()
 	TObjectPtr<URavenAbilitySystemComponent> AbilitySystemComponent;

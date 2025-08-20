@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "RavenPlayerState.generated.h"
 
+class URavenAbilitySystemComponent;
 class UGameplayEffect;
 class UAttributeSet;
 
@@ -24,8 +25,8 @@ public:
 
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 protected:
-	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability System")
+	TObjectPtr<URavenAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
 	TObjectPtr<UAttributeSet> AttributeSet;

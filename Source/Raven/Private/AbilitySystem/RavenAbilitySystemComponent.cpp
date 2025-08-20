@@ -5,6 +5,30 @@
 
 #include "AbilitySystem/GameplayAbility/RavenGameplayAbility.h"
 
+bool URavenAbilitySystemComponent::TryActivateAbilityByID(EAbilityInputID InputID)
+{
+	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
+	GetAllAbilities(AbilitySpecHandles);
+
+	FGameplayAbilitySpecHandle* AbilitySpecHandle = nullptr;
+	for (FGameplayAbilitySpecHandle CurrentAbilitySpecHandle : AbilitySpecHandles)
+	{
+		FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(CurrentAbilitySpecHandle);
+		if (AbilitySpec && AbilitySpec->InputID == static_cast<int32>(InputID))
+		{
+			AbilitySpecHandle = &CurrentAbilitySpecHandle;	
+			break;
+		}
+	}
+
+	if (AbilitySpecHandle)
+	{
+		return TryActivateAbility(*AbilitySpecHandle);
+	}
+
+	return false;
+}
+
 void URavenAbilitySystemComponent::HoldInputForAbilityByID(EAbilityInputID InputID)
 {
 	if (InputID == EAbilityInputID::None || InputID == EAbilityInputID::MAX)

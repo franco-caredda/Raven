@@ -3,6 +3,9 @@
 
 #include "RavenAssetManager.h"
 
+#include "RavenGameplayTagRegistry.h"
+
+
 URavenAssetManager& URavenAssetManager::Get()
 {
 	check(GEngine);
@@ -12,5 +15,6 @@ URavenAssetManager& URavenAssetManager::Get()
 void URavenAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
-	GameplayTagRegistry.InitRegistry();
+
+	FRavenGameplayTagRegistry::Get().InitRegistry();
 }

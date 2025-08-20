@@ -4,6 +4,7 @@
 #include "Player/RavenPlayerController.h"
 #include "Player/RavenPlayerState.h"
 
+#include "AbilitySystem/AbilityBufferComponent.h"
 #include "AbilitySystem/RavenAbilitySystemComponent.h"
 
 #include "EnhancedInputSubsystems.h"
@@ -14,6 +15,11 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "Input/AbilityInputMappingDataAsset.h"
+
+ARavenPlayerController::ARavenPlayerController()
+{
+	AbilityBufferComponent = CreateDefaultSubobject<UAbilityBufferComponent>(TEXT("AbilityBufferComponent"));
+}
 
 void ARavenPlayerController::BeginPlay()
 {
@@ -31,6 +37,8 @@ void ARavenPlayerController::BeginPlay()
 	
 	AbilitySystemComponent =
 		Cast<URavenAbilitySystemComponent>(aPlayerState->GetAbilitySystemComponent());
+	AbilityBufferComponent->OnAbilityInputTryExecute.BindUObject(AbilitySystemComponent,
+		&URavenAbilitySystemComponent::TryActivateAbilityByID);
 }
 
 void ARavenPlayerController::SetupInputComponent()
@@ -106,7 +114,17 @@ void ARavenPlayerController::OnAbilityActionTriggered(EAbilityInputID InputID)
 {
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->HoldInputForAbilityByID(InputID);
+		static FOnAbilityInputExecuteSignature OnExecute;
+
+		if (!OnExecute.IsBound())
+		{
+			OnExecute.BindLambda([this](EAbilityInputID InputID)
+			{
+				AbilitySystemComponent->HoldInputForAbilityByID(InputID);
+			});
+		}
+		
+		AbilityBufferComponent->ExecuteOrRegisterInput(InputID, OnExecute);
 	}
 }
 
