@@ -4,7 +4,6 @@
 #include "Player/RavenPlayerController.h"
 #include "Player/RavenPlayerState.h"
 
-#include "AbilitySystem/AbilityBufferComponent.h"
 #include "AbilitySystem/RavenAbilitySystemComponent.h"
 
 #include "EnhancedInputSubsystems.h"
@@ -14,7 +13,10 @@
 
 #include "InputAction.h"
 #include "InputActionValue.h"
+
 #include "Input/AbilityInputMappingDataAsset.h"
+#include "Input/AbilityBufferComponent.h"
+
 
 ARavenPlayerController::ARavenPlayerController()
 {
@@ -55,11 +57,11 @@ void ARavenPlayerController::SetupInputComponent()
 	for (const FAbilityInputMapping& InputMapping : AbilityInputMapping->GetInputMappings())
 	{
 		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Started, this,
-			&ARavenPlayerController::OnAbilityActionStarted, InputMapping.MappingID);
+			&ARavenPlayerController::OnAbilityActionStarted, InputMapping);
 		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Triggered, this,
-			&ARavenPlayerController::OnAbilityActionTriggered, InputMapping.MappingID);
+			&ARavenPlayerController::OnAbilityActionTriggered, InputMapping);
 		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Completed, this,
-			&ARavenPlayerController::OnAbilityActionCompleted, InputMapping.MappingID);
+			&ARavenPlayerController::OnAbilityActionCompleted, InputMapping);
 	}
 }
 
@@ -105,33 +107,24 @@ void ARavenPlayerController::OnJumpActionCompleted(const FInputActionValue& Valu
 }
 
 // Notice: if an action has some modifiers on it, this method is not a suitable place for the ability activation 
-void ARavenPlayerController::OnAbilityActionStarted(EAbilityInputID InputID)
+void ARavenPlayerController::OnAbilityActionStarted(FAbilityInputMapping InputMapping)
 {
 //	AbilitySystemComponent->HoldInputForAbilityByID(InputID);
 }
 
-void ARavenPlayerController::OnAbilityActionTriggered(EAbilityInputID InputID)
+void ARavenPlayerController::OnAbilityActionTriggered(FAbilityInputMapping InputMapping)
 {
 	if (AbilitySystemComponent)
 	{
-		static FOnAbilityInputExecuteSignature OnExecute;
-
-		if (!OnExecute.IsBound())
-		{
-			OnExecute.BindLambda([this](EAbilityInputID InputID)
-			{
-				AbilitySystemComponent->HoldInputForAbilityByID(InputID);
-			});
-		}
-		
-		AbilityBufferComponent->ExecuteOrRegisterInput(InputID, OnExecute);
+		AbilityBufferComponent->ExecuteOrRegisterInput(AbilitySystemComponent.Get(),
+			InputMapping, &URavenAbilitySystemComponent::HoldInputForAbilityByID);
 	}
 }
 
-void ARavenPlayerController::OnAbilityActionCompleted(EAbilityInputID InputID)
+void ARavenPlayerController::OnAbilityActionCompleted(FAbilityInputMapping InputMapping)
 {
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->ReleaseInputForAbilityByID(InputID);
+		AbilitySystemComponent->ReleaseInputForAbilityByID(InputMapping.MappingID);
 	}
 }

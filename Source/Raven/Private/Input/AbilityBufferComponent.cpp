@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AbilitySystem/AbilityBufferComponent.h"
+#include "Input/AbilityBufferComponent.h"
 
 UAbilityBufferComponent::UAbilityBufferComponent()
 {
@@ -40,12 +40,31 @@ void UAbilityBufferComponent::ProcessBuffer()
 	}
 }
 
+void UAbilityBufferComponent::ClearBufferTimer(float DeltaTime)
+{
+	if (!bRegister)
+	{
+		ClearTimer = 0.0f;
+		return;
+	}
+
+	ClearTimer += DeltaTime;
+	if (ClearTimer >= ClearBufferDelay)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Clearing the buffer"));
+		
+		bRegister = false;
+		Buffer.Empty();
+	}
+}
+
 void UAbilityBufferComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                             FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
 	ProcessBuffer();
+	ClearBufferTimer(DeltaTime);
 }
 
 void UAbilityBufferComponent::RegisterInput(EAbilityInputID InputID)
@@ -54,19 +73,6 @@ void UAbilityBufferComponent::RegisterInput(EAbilityInputID InputID)
 			static_cast<int>(InputID));
 	Buffer.PushLast(FAbilityInput{ InputID,
 		static_cast<float>(GetWorld()->GetTimeSeconds()) });
-}
-
-void UAbilityBufferComponent::ExecuteOrRegisterInput(EAbilityInputID InputID,
-	const FOnAbilityInputExecuteSignature& OnExecute)
-{
-	if (bRegister)
-	{
-		RegisterInput(InputID);
-
-		return;
-	}
-
-	OnExecute.Execute(InputID);
-	bRegister = true; // TODO: At some point, the flag must be disabled
+	ClearTimer = 0.0f;
 }
 

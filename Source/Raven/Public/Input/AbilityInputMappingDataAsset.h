@@ -10,6 +10,15 @@
 class UInputAction;
 enum class EAbilityInputID : uint8;
 
+UENUM(BlueprintType)
+enum class EInputMode : uint8
+{
+	None = 0,
+	Buffered = 1,
+
+	MAX
+};
+
 USTRUCT(BlueprintType)
 struct FAbilityInputMapping
 {
@@ -20,6 +29,9 @@ struct FAbilityInputMapping
 
 	UPROPERTY(EditAnywhere)
 	EAbilityInputID MappingID;
+
+	UPROPERTY(EditAnywhere)
+	EInputMode InputMode;
 };
 
 /**

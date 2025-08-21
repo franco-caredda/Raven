@@ -15,7 +15,7 @@ class UAbilityInputMappingDataAsset;
 struct FInputActionValue;
 struct FGameplayTag;
 
-enum class EAbilityInputID : uint8;
+struct FAbilityInputMapping;
 
 /**
  * 
@@ -43,13 +43,13 @@ protected:
 	void OnJumpActionCompleted(const FInputActionValue& Value);
 
 	UFUNCTION()
-	void OnAbilityActionStarted(EAbilityInputID InputID);
+	void OnAbilityActionStarted(FAbilityInputMapping InputMapping);
 
 	UFUNCTION()
-	void OnAbilityActionTriggered(EAbilityInputID InputID);
+	void OnAbilityActionTriggered(FAbilityInputMapping InputMapping);
 	
 	UFUNCTION()
-	void OnAbilityActionCompleted(EAbilityInputID InputID);
+	void OnAbilityActionCompleted(FAbilityInputMapping InputMapping);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
