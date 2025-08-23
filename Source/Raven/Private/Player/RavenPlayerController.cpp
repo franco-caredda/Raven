@@ -6,14 +6,13 @@
 
 #include "AbilitySystem/RavenAbilitySystemComponent.h"
 
+#include "Character/RavenCharacterPlayable.h"
+
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
-#include "GameFramework/Character.h"
-
 #include "InputAction.h"
 #include "InputActionValue.h"
-
 #include "Input/AbilityInputMappingDataAsset.h"
 #include "Input/AbilityBufferComponent.h"
 
@@ -54,6 +53,9 @@ void ARavenPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
 		&ARavenPlayerController::OnLookActionTriggered);
 
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this,
+		&ARavenPlayerController::OnInteractActionTriggered);
+
 	for (const FAbilityInputMapping& InputMapping : AbilityInputMapping->GetInputMappings())
 	{
 		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Started, this,
@@ -90,19 +92,11 @@ void ARavenPlayerController::OnLookActionTriggered(const FInputActionValue& Valu
 	AddYawInput(Direction.X);
 }
 
-void ARavenPlayerController::OnJumpActionStarted(const FInputActionValue& Value)
+void ARavenPlayerController::OnInteractActionTriggered(const FInputActionValue& Value)
 {
-	if (ACharacter* aCharacter = GetPawn<ACharacter>())
+	if (ARavenCharacterPlayable* aCharacter = GetPawn<ARavenCharacterPlayable>())
 	{
-		aCharacter->Jump();
-	}
-}
-
-void ARavenPlayerController::OnJumpActionCompleted(const FInputActionValue& Value)
-{
-	if (ACharacter* aCharacter = GetPawn<ACharacter>())
-	{
-		aCharacter->StopJumping();
+		aCharacter->TryInteract();
 	}
 }
 

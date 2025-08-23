@@ -12,7 +12,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMontageLoaded, UAnimMontage*, Ani
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMontageLoadCanceled);
 
 /**
- * 
+ * Loads a montage on demand via TSoftObjectPtr and returns a pointer to it.
+ * NOTE: the returned pointer should be cached, otherwise the montage will be GC collected.
  */
 UCLASS()
 class RAVEN_API UAbilityTask_LoadMontage : public UAbilityTask

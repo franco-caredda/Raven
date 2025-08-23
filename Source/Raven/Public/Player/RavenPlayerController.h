@@ -37,10 +37,7 @@ protected:
 	void OnLookActionTriggered(const FInputActionValue& Value);
 
 	UFUNCTION()
-	void OnJumpActionStarted(const FInputActionValue& Value);
-
-	UFUNCTION()
-	void OnJumpActionCompleted(const FInputActionValue& Value);
+	void OnInteractActionTriggered(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void OnAbilityActionStarted(FAbilityInputMapping InputMapping);
@@ -59,9 +56,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input|Actions")
 	TObjectPtr<UInputAction> LookAction;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category="Input|Actions")
-	TObjectPtr<UInputAction> JumpAction;
+	TObjectPtr<UInputAction> InteractAction;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input|Actions|Abilities")
 	TObjectPtr<UAbilityInputMappingDataAsset> AbilityInputMapping;
