@@ -4,6 +4,8 @@
 #include "Actor/Pickup.h"
 #include "Actor/Weapon/WeaponBase.h"
 
+#include "Component/WeaponHandlerComponent.h"
+
 #include "Interface/WeaponHandler.h"
 
 APickup::APickup()
@@ -16,7 +18,9 @@ void APickup::Interact_Implementation(AActor* Causer)
 	if (IWeaponHandler* WeaponHandler = Cast<IWeaponHandler>(Causer))
 	{
 		AWeaponBase* Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
-		IWeaponHandler::Execute_AttachWeapon(Causer, Weapon);
+		UWeaponHandlerComponent* WeaponHandlerComponent = WeaponHandler->GetWeaponHandlerComponent();
+
+		WeaponHandlerComponent->PutWeapon(Weapon);
 		
 		Destroy();
 	}

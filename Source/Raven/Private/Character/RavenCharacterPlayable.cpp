@@ -9,6 +9,7 @@
 #include "Actor/Weapon/WeaponBase.h"
 
 #include "Camera/CameraComponent.h"
+#include "Component/WeaponHandlerComponent.h"
 
 #include "Components/SphereComponent.h"
 
@@ -37,6 +38,8 @@ ARavenCharacterPlayable::ARavenCharacterPlayable()
 	InteractionVolume = CreateDefaultSubobject<USphereComponent>(TEXT("InteractionVolume"));
 	InteractionVolume->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	InteractionVolume->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	WeaponHandlerComponent = CreateDefaultSubobject<UWeaponHandlerComponent>(TEXT("WeaponHandlerComponent"));
 }
 
 void ARavenCharacterPlayable::PossessedBy(AController* NewController)
@@ -67,22 +70,9 @@ void ARavenCharacterPlayable::Tick(float DeltaTime)
 	CharacterMovementComponent->bOrientRotationToMovement = CharacterMovementComponent->IsMovingOnGround();
 }
 
-void ARavenCharacterPlayable::AttachWeapon_Implementation(AWeaponBase* Weapon)
+UWeaponHandlerComponent* ARavenCharacterPlayable::GetWeaponHandlerComponent() const
 {
-	Execute_DetachWeapon(this);
-
-	AttachedWeapon = Weapon;
-	AttachedWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-		WeaponAttachmentSocket);
-}
-
-void ARavenCharacterPlayable::DetachWeapon_Implementation()
-{
-	if (AttachedWeapon)
-	{
-		AttachedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		AttachedWeapon = nullptr;
-	}
+	return WeaponHandlerComponent;
 }
 
 void ARavenCharacterPlayable::TryInteract()
@@ -101,6 +91,8 @@ void ARavenCharacterPlayable::BeginPlay()
 		&ARavenCharacterPlayable::OnInteractionVolumeBeginOverlap);
 	InteractionVolume->OnComponentEndOverlap.AddDynamic(this,
 		&ARavenCharacterPlayable::OnInteractionVolumeEndOverlap);
+	WeaponHandlerComponent->OnRightHandWeaponChanged.AddDynamic(this,
+		&ARavenCharacterPlayable::OnRightHandWeaponChanged);
 }
 
 void ARavenCharacterPlayable::OnMovementSpeedChanged(const FOnAttributeChangeData& AttributeChangeData)
@@ -120,4 +112,15 @@ void ARavenCharacterPlayable::OnInteractionVolumeEndOverlap(UPrimitiveComponent*
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	Interactable = nullptr;
+}
+
+void ARavenCharacterPlayable::OnRightHandWeaponChanged(AWeaponBase* OldWeapon, AWeaponBase* NewWeapon)
+{
+	if (OldWeapon)
+	{
+		OldWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	}
+
+	NewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+		WeaponAttachmentSocket);
 }

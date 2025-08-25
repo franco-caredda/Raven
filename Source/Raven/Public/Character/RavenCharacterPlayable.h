@@ -26,9 +26,8 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void Tick(float DeltaTime) override;
-
-	virtual void AttachWeapon_Implementation(AWeaponBase* Weapon) override;
-	virtual void DetachWeapon_Implementation() override;
+	
+	virtual UWeaponHandlerComponent* GetWeaponHandlerComponent() const override;
 
 	void TryInteract();
 protected:
@@ -43,6 +42,9 @@ private:
 	UFUNCTION()
 	void OnInteractionVolumeEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void OnRightHandWeaponChanged(AWeaponBase* OldWeapon, AWeaponBase* NewWeapon);
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
@@ -52,14 +54,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USphereComponent> InteractionVolume;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UWeaponHandlerComponent> WeaponHandlerComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Attachments")
 	FName WeaponAttachmentSocket;
 private:
-	// TODO: Move to a separate component
-	UPROPERTY()
-	TObjectPtr<AWeaponBase> AttachedWeapon;
-
 	UPROPERTY()
 	TScriptInterface<IInteractable> Interactable;
 };

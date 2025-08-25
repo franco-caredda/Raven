@@ -7,9 +7,10 @@
 #include "WeaponHandler.generated.h"
 
 class AWeaponBase;
+class UWeaponHandlerComponent;
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, NotBlueprintable)
 class UWeaponHandler : public UInterface
 {
 	GENERATED_BODY()
@@ -22,11 +23,6 @@ class RAVEN_API IWeaponHandler
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintNativeEvent, Category="Weapon Handler")
-	void AttachWeapon(AWeaponBase* Weapon);
-	virtual void AttachWeapon_Implementation(AWeaponBase* Weapon) = 0;
-
-	UFUNCTION(BlueprintNativeEvent, Category="Weapon Handler")
-	void DetachWeapon();
-	virtual void DetachWeapon_Implementation() = 0;
+	UFUNCTION(BlueprintCallable, Category="Weapon Handler Interface")
+	virtual UWeaponHandlerComponent* GetWeaponHandlerComponent() const = 0;
 };
