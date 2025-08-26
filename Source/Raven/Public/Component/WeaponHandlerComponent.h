@@ -24,7 +24,15 @@ public:
 	void ChangeWeapon();
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE AWeaponBase* GetCurrentWeapon() const { return RightHandSlots[CurrentSlot]; }
+	FORCEINLINE AWeaponBase* GetCurrentWeapon() const
+	{
+		if (CurrentSlot < 0)
+		{
+			return nullptr;
+		}
+		
+		return RightHandSlots[CurrentSlot];
+	}
 protected:
 	virtual void BeginPlay() override;
 public:

@@ -51,16 +51,22 @@ void URavenAbilitySystemComponent::ReleaseInputForAbilityByID(EAbilityInputID In
 	AbilityLocalInputReleased(static_cast<uint8>(InputID));
 }
 
+FGameplayAbilitySpecHandle URavenAbilitySystemComponent::GrantAbility(const TSubclassOf<UGameplayAbility>& GameplayAbilityClass)
+{
+	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec{GameplayAbilityClass, 1};
+
+	if (const URavenGameplayAbility* RavenGameplayAbility = Cast<URavenGameplayAbility>(AbilitySpec.Ability))
+	{
+		AbilitySpec.InputID = static_cast<int32>(RavenGameplayAbility->GetInputID());
+	}	
+
+	return GiveAbility(AbilitySpec);
+}
+
 void URavenAbilitySystemComponent::GrantAbilities(const TArray<TSubclassOf<UGameplayAbility>>& GameplayAbilities)
 {
 	for (TSubclassOf<UGameplayAbility> AbilityClass : GameplayAbilities)
 	{
-		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec{AbilityClass, 1};
-
-		if (const URavenGameplayAbility* RavenGameplayAbility = Cast<URavenGameplayAbility>(AbilitySpec.Ability))
-		{
-			AbilitySpec.InputID = static_cast<int32>(RavenGameplayAbility->GetInputID());
-			GiveAbility(AbilitySpec);
-		}
+		GrantAbility(AbilityClass);
 	}
 }

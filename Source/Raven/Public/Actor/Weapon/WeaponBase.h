@@ -18,8 +18,14 @@ class RAVEN_API AWeaponBase : public AActor,
 	GENERATED_BODY()
 public:	
 	AWeaponBase();
-
+	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	FORCEINLINE TSoftObjectPtr<UAnimMontage> GetLightAttackSeriesAnimMontage() const
+	{ return LightAttackSeriesMontage; }
+
+	FORCEINLINE TSoftObjectPtr<UAnimMontage> GetHeavyAttackAnimMontage() const
+	{ return HeavyAttackMontage; }
 protected:
 	virtual void BeginPlay() override;
 private:

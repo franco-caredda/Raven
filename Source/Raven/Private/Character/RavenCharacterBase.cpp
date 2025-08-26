@@ -16,6 +16,26 @@ UAbilitySystemComponent* ARavenCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void ARavenCharacterBase::LightAttack() const
+{
+	ActivateAbility(LightAttackHandle);
+}
+
+void ARavenCharacterBase::HeavyAttack() const
+{
+	ActivateAbility(HeavyAttackHandle);
+}
+
+void ARavenCharacterBase::Block() const
+{
+	ActivateAbility(BlockHandle);
+}
+
+void ARavenCharacterBase::Parry() const
+{
+	ActivateAbility(ParryHandle);
+}
+
 void ARavenCharacterBase::GrantDefaultAbilities()
 {
 	if (!AbilitySystemComponent)
@@ -27,6 +47,26 @@ void ARavenCharacterBase::GrantDefaultAbilities()
 		Cast<URavenAbilitySystemComponent>(AbilitySystemComponent))
 	{
 		RavenAbilitySystemComponent->GrantAbilities(DefaultGameplayAbilities);
+
+		if (LightAttackAbilityClass)
+		{
+			LightAttackHandle = RavenAbilitySystemComponent->GrantAbility(LightAttackAbilityClass);
+		}
+
+		if (HeavyAttackAbilityClass)
+		{
+			HeavyAttackHandle = RavenAbilitySystemComponent->GrantAbility(HeavyAttackAbilityClass);
+		}
+		
+		if (BlockAbilityClass)
+		{
+			BlockHandle = RavenAbilitySystemComponent->GrantAbility(BlockAbilityClass);
+		}
+
+		if (ParryAbilityClass)
+		{
+			ParryHandle = RavenAbilitySystemComponent->GrantAbility(ParryAbilityClass);
+		}
 	}
 }
 
@@ -50,6 +90,14 @@ void ARavenCharacterBase::ApplyDefaultEffects()
 	for (TSubclassOf<UGameplayEffect> GameplayEffectClass : DefaultGameplayEffects)
 	{
 		ApplyEffect(GameplayEffectClass);
+	}
+}
+
+void ARavenCharacterBase::ActivateAbility(FGameplayAbilitySpecHandle AbilitySpecHandle) const
+{
+	if (AbilitySpecHandle.IsValid())
+	{
+		AbilitySystemComponent->TryActivateAbility(AbilitySpecHandle);
 	}
 }
 
