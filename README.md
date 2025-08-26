@@ -47,14 +47,12 @@ Build process:
 5. Wait until Rider has finished to build the project model.
 6. Build the solution and launch the editor.
 
-NOTE: if you use Visual Studio 2022 as the environment of choice, follow these steps:
-1. Open the UE5.6 editor from Epic's launcher.
-2. Try to open the project from the editor.
-3. If Unreal Engine asks you to build the source manually, do the following steps:  
-3.1. Locate the Build.bat under `<path to UE5.6>\Engine\Build\BatchFiles`  
-3.2. Open the command line.  
-3.3. Execute `cd <path to the Build.bat file>`.  
-3.4. Launch `Build.bat RavenEditor Win64 Development -Project="<path to the .uproject file>\Raven.uproject" -WaitMutex  -FromMSBuild`.
-4. Reopen the project from the Editor.  
+NOTE: if you use Visual Studio 2022 as the environment of choice, UE5 might ask you to compile the code manually, but Visual Studio doesn't open .uproject files like Rider does.  
+To solve this problem, follow these steps:
+1. In `<path to UE5.6>\Engine\Binaries\DotNET\UnrealBuildTool`, open the command line.
+2. Run `dotnet "UnrealBuildTool.dll" -projectfiles -project="<path to the .uproject file>" -game -rocket -progress`.
+3. After the generation of the Visual Studio solution, open it in the IDE.  
+4. Build it.
+5. Launch the editor from Visual Studio  
 
 After doing these steps, the source should be built and you should be able to launch the editor and from there generate the solution for Visual Studio.
