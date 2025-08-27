@@ -5,27 +5,26 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Actor.h"
+#include "Interface/AssetInterface.h"
 #include "WeaponBase.generated.h"
 
+struct FMontageDefinition;
 class URavenAbilitySystemComponent;
 class UGameplayEffect;
 class UBoxComponent;
+class UTagAssetMap;
 
 UCLASS(Abstract)
 class RAVEN_API AWeaponBase : public AActor,
-							  public IAbilitySystemInterface
+							  public IAbilitySystemInterface,
+							  public IAssetInterface
 {
 	GENERATED_BODY()
 public:	
 	AWeaponBase();
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-	FORCEINLINE TSoftObjectPtr<UAnimMontage> GetLightAttackSeriesAnimMontage() const
-	{ return LightAttackSeriesMontage; }
-
-	FORCEINLINE TSoftObjectPtr<UAnimMontage> GetHeavyAttackAnimMontage() const
-	{ return HeavyAttackMontage; }
+	virtual const FMontageDefinition* GetAssetByTag(const FGameplayTag& GameplayTag) const override;
 protected:
 	virtual void BeginPlay() override;
 private:
@@ -46,9 +45,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<URavenAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay|Combat")
-	TSoftObjectPtr<UAnimMontage> LightAttackSeriesMontage;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay|Combat")
-	TSoftObjectPtr<UAnimMontage> HeavyAttackMontage;
+	UPROPERTY(EditDefaultsOnly, Category="Assets")
+	TObjectPtr<UTagAssetMap> TagAssetMap;
 };

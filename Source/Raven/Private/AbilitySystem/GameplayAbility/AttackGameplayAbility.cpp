@@ -12,18 +12,27 @@
 
 #include "Interface/WeaponHandler.h"
 
-#include "RavenGameplayTagRegistry.h"
+#include "DataAsset/TagAssetMap.h"
 
 void UAttackGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+                                             const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+                                             const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	TSoftObjectPtr<UAnimMontage> AnimMontage = GetAnimMontage(ActorInfo->AvatarActor.Get());
+	AssetDefinition = GetAssetDefinition(ActorInfo->AvatarActor.Get());
+	
+	if (!AssetDefinition)
+	{
+		OnFailed();
+		return;
+	}
+
+	CurrentSection++;
+	CurrentSection = CurrentSection % AssetDefinition->MontageSections.Num();
 	
 	UAbilityTask_LoadMontage* AbilityTask_LoadMontage =
-		UAbilityTask_LoadMontage::WaitLoadMontage(this, AnimMontage);
+		UAbilityTask_LoadMontage::WaitLoadMontage(this, AssetDefinition->AnimMontage);
 
 	AbilityTask_LoadMontage->OnMontageLoaded.AddDynamic(this, &UAttackGameplayAbility::OnMontageLoaded);
 	AbilityTask_LoadMontage->OnMontageLoadCanceled.AddDynamic(this, &UAttackGameplayAbility::OnFailed);
@@ -36,7 +45,7 @@ void UAttackGameplayAbility::OnMontageLoaded(UAnimMontage* AnimMontage)
 	
 	UAbilityTask_PlayMontageAndWait* AbilityTask_PlayMontageAndWait =
 		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, FName{},
-			SolvedAttackAnimMontage);
+			SolvedAttackAnimMontage, 1.0f, AssetDefinition->MontageSections[CurrentSection]);
 
 	AbilityTask_PlayMontageAndWait->OnCompleted.AddDynamic(this, &UAttackGameplayAbility::OnMontageCompleted);
 	AbilityTask_PlayMontageAndWait->OnCancelled.AddDynamic(this, &UAttackGameplayAbility::OnFailed);
@@ -56,32 +65,17 @@ void UAttackGameplayAbility::OnMontageCompleted()
 			true, false);
 }
 
-TSoftObjectPtr<UAnimMontage> UAttackGameplayAbility::GetAnimMontage(AActor* AvatarActor) const
+const FMontageDefinition* UAttackGameplayAbility::GetAssetDefinition(AActor* AvatarActor) const
 {
-	const FRavenGameplayTagRegistry& GameplayTagRegistry = FRavenGameplayTagRegistry::Get();
-
-	TSoftObjectPtr<UAnimMontage> AnimMontage;
 	if (const IWeaponHandler* WeaponHandler = Cast<IWeaponHandler>(AvatarActor))
 	{
 		const UWeaponHandlerComponent* WeaponHandlerComponent = WeaponHandler->GetWeaponHandlerComponent();
 
 		if (const AWeaponBase* WeaponBase = WeaponHandlerComponent->GetCurrentWeapon())
 		{
-			if (GetAssetTags().HasTagExact(GameplayTagRegistry.GetRavenAbilityLightAttack()))
-			{
-				AnimMontage = WeaponBase->GetLightAttackSeriesAnimMontage();
-			}
-			else
-			{
-				AnimMontage = WeaponBase->GetHeavyAttackAnimMontage();
-			}
+			return WeaponBase->GetAssetByTag(ActionTag);
 		}
 	}
 
-	if (AnimMontage.IsNull())
-	{
-		AnimMontage = AttackAnimMontage;
-	}
-
-	return AnimMontage;
+	return nullptr;
 }

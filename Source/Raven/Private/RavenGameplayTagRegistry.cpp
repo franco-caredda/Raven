@@ -32,6 +32,11 @@ void FRavenGameplayTagRegistry::InitRegistry()
 	RavenAbilityUse = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Use"),
 		FString("Equipped items"));
 
+	RavenWeaponSword = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Weapon.Sword"),
+		FString("Used on weapon classes to associate assets with the weapon"));
+	RavenWeaponAxe = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Weapon.Axe"),
+		FString("Used on weapon classes to associate assets with the weapon"));
+
 	RavenEffectDrainStamina = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Effect.Drain.Stamina"),
 		FString("Used in the effects that have to block stamina restoring and have a continuous cost"));
 	RavenEffectAbilityCancelable = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Effect.Ability.Cancelable"),

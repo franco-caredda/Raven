@@ -6,6 +6,7 @@
 #include "AbilitySystem/GameplayAbility/RavenGameplayAbility.h"
 #include "AttackGameplayAbility.generated.h"
 
+struct FMontageDefinition;
 /**
  * 
  */
@@ -26,11 +27,15 @@ private:
 	UFUNCTION()
 	void OnMontageCompleted();
 	
-	TSoftObjectPtr<UAnimMontage> GetAnimMontage(AActor* AvatarActor) const;
+	const FMontageDefinition* GetAssetDefinition(AActor* AvatarActor) const;
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
-	TSoftObjectPtr<UAnimMontage> AttackAnimMontage;
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag ActionTag;
 private:
+	const FMontageDefinition* AssetDefinition;
+	
 	UPROPERTY()
 	TObjectPtr<UAnimMontage> SolvedAttackAnimMontage;
+
+	int CurrentSection = -1;
 };

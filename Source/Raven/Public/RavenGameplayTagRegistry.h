@@ -43,6 +43,9 @@ public:
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Shield)
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Use)
 
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Weapon, Sword)
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Weapon, Axe)
+
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Effect, Ability, Cancelable)
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Effect, Drain, Stamina)
 

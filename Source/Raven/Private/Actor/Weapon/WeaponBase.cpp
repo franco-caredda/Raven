@@ -6,6 +6,7 @@
 #include "AbilitySystem/RavenAbilitySystemComponent.h"
 
 #include "Components/BoxComponent.h"
+#include "DataAsset/TagAssetMap.h"
 
 AWeaponBase::AWeaponBase()
 {
@@ -25,6 +26,11 @@ AWeaponBase::AWeaponBase()
 UAbilitySystemComponent* AWeaponBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+const FMontageDefinition* AWeaponBase::GetAssetByTag(const FGameplayTag& GameplayTag) const
+{
+	return TagAssetMap->GetAssetDefinitionByTag(GameplayTag);
 }
 
 void AWeaponBase::BeginPlay()
