@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Input/AbilityBufferComponent.h"
+#include "Component/AbilityBufferComponent.h"
 
 UAbilityBufferComponent::UAbilityBufferComponent()
 {
@@ -42,18 +42,11 @@ void UAbilityBufferComponent::ProcessBuffer()
 
 void UAbilityBufferComponent::ClearBufferTimer(float DeltaTime)
 {
-	if (!bRegister)
-	{
-		ClearTimer = 0.0f;
-		return;
-	}
-
 	ClearTimer += DeltaTime;
-	if (ClearTimer >= ClearBufferDelay)
+	if (ClearTimer >= ClearBufferDelay && !Buffer.IsEmpty())
 	{
 		UE_LOG(LogTemp, Display, TEXT("Clearing the buffer"));
 		
-		bRegister = false;
 		Buffer.Empty();
 	}
 }
@@ -71,8 +64,8 @@ void UAbilityBufferComponent::RegisterInput(EAbilityInputID InputID)
 {
 	UE_LOG(LogTemp, Display, TEXT("Input with ID [%d] has been pushed to the buffer"),
 			static_cast<int>(InputID));
+	ClearTimer = 0.0f;
 	Buffer.PushLast(FAbilityInput{ InputID,
 		static_cast<float>(GetWorld()->GetTimeSeconds()) });
-	ClearTimer = 0.0f;
 }
 

@@ -9,10 +9,13 @@
 #include "GameplayAbilitySpecHandle.h"
 #include "RavenCharacterBase.generated.h"
 
+class URavenGameplayAbilityDataAsset;
 class UGameplayEffect;
 class URavenAttributeSet;
 class UAttributeSet;
 class UGameplayAbility;
+
+enum class EAbilityInputID : uint8;
 
 UCLASS(Abstract)
 class RAVEN_API ARavenCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -44,22 +47,10 @@ protected:
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System")
-	TArray<TSubclassOf<UGameplayAbility>> DefaultGameplayAbilities;
-
+	TObjectPtr<URavenGameplayAbilityDataAsset> GameplayAbilityDataAsset;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System")
 	TArray<TSubclassOf<UGameplayEffect>> DefaultGameplayEffects;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Combat")
-	TSubclassOf<UGameplayAbility> LightAttackAbilityClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Combat")
-	TSubclassOf<UGameplayAbility> HeavyAttackAbilityClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Combat")
-	TSubclassOf<UGameplayAbility> BlockAbilityClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Combat")
-	TSubclassOf<UGameplayAbility> ParryAbilityClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
@@ -70,8 +61,5 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
 private:
-	FGameplayAbilitySpecHandle LightAttackHandle;
-	FGameplayAbilitySpecHandle HeavyAttackHandle;
-	FGameplayAbilitySpecHandle BlockHandle;
-	FGameplayAbilitySpecHandle ParryHandle;
+	TMap<EAbilityInputID, FGameplayAbilitySpecHandle> GrantedAbilities;
 };

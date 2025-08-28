@@ -25,6 +25,9 @@ private:
 	void OnFailed();
 
 	UFUNCTION()
+	void OnCanceled();
+
+	UFUNCTION()
 	void OnMontageCompleted();
 	
 	const FMontageDefinition* GetAssetDefinition(AActor* AvatarActor) const;

@@ -14,6 +14,8 @@ bool URavenAbilitySystemComponent::TryActivateAbilityByID(EAbilityInputID InputI
 	for (FGameplayAbilitySpecHandle CurrentAbilitySpecHandle : AbilitySpecHandles)
 	{
 		FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(CurrentAbilitySpecHandle);
+		UE_LOG(LogTemp, Display, TEXT("Ability Input Id [%d] Status [%d]"),
+			static_cast<int8>(AbilitySpec->InputID), static_cast<int8>(AbilitySpec->IsActive()));
 		if (AbilitySpec && AbilitySpec->InputID == static_cast<int32>(InputID))
 		{
 			AbilitySpecHandle = &CurrentAbilitySpecHandle;	

@@ -4,24 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "RavenGameplayAbilityTypes.h"
 #include "RavenGameplayAbility.generated.h"
 
 struct FGameplayTag;
-
-UENUM(BlueprintType)
-enum class EAbilityInputID : uint8
-{
-	None = 0,
-	AbilityJump = 1,
-	AbilityLightAttack = 2,
-	AbilityHeavyAttack = 3,
-	AbilityShield = 4,
-	AbilityUse = 5,
-	AbilityDodge = 6,
-	AbilitySprint = 7,
-
-	MAX
-};
 
 /**
  * 

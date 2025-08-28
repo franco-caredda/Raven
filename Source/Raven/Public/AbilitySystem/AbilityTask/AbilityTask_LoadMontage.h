@@ -25,7 +25,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
 	static UAbilityTask_LoadMontage* WaitLoadMontage(UGameplayAbility* OwningAbility,
 		TSoftObjectPtr<UAnimMontage> Montage);
-
+	
 	virtual void OnDestroy(bool bInOwnerFinished) override;
 private:
 	UFUNCTION()

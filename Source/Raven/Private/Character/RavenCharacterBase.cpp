@@ -6,6 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/RavenAbilitySystemComponent.h"
 
+#include "DataAsset/RavenGameplayAbilityDataAsset.h"
+
 ARavenCharacterBase::ARavenCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -18,22 +20,20 @@ UAbilitySystemComponent* ARavenCharacterBase::GetAbilitySystemComponent() const
 
 void ARavenCharacterBase::LightAttack() const
 {
-	ActivateAbility(LightAttackHandle);
+	ActivateAbility(GrantedAbilities[EAbilityInputID::AbilityLightAttack]);
 }
 
 void ARavenCharacterBase::HeavyAttack() const
 {
-	ActivateAbility(HeavyAttackHandle);
+	ActivateAbility(GrantedAbilities[EAbilityInputID::AbilityHeavyAttack]);
 }
 
 void ARavenCharacterBase::Block() const
 {
-	ActivateAbility(BlockHandle);
 }
 
 void ARavenCharacterBase::Parry() const
 {
-	ActivateAbility(ParryHandle);
 }
 
 void ARavenCharacterBase::GrantDefaultAbilities()
@@ -46,26 +46,13 @@ void ARavenCharacterBase::GrantDefaultAbilities()
 	if (URavenAbilitySystemComponent* RavenAbilitySystemComponent =
 		Cast<URavenAbilitySystemComponent>(AbilitySystemComponent))
 	{
-		RavenAbilitySystemComponent->GrantAbilities(DefaultGameplayAbilities);
+		const TArray<FRavenGameplayAbilityData>& GameplayAbilityDataSet =
+			GameplayAbilityDataAsset->GetGameplayAbilityDataSet();
 
-		if (LightAttackAbilityClass)
+		for (const auto& GameplayAbilityData : GameplayAbilityDataSet)
 		{
-			LightAttackHandle = RavenAbilitySystemComponent->GrantAbility(LightAttackAbilityClass);
-		}
-
-		if (HeavyAttackAbilityClass)
-		{
-			HeavyAttackHandle = RavenAbilitySystemComponent->GrantAbility(HeavyAttackAbilityClass);
-		}
-		
-		if (BlockAbilityClass)
-		{
-			BlockHandle = RavenAbilitySystemComponent->GrantAbility(BlockAbilityClass);
-		}
-
-		if (ParryAbilityClass)
-		{
-			ParryHandle = RavenAbilitySystemComponent->GrantAbility(ParryAbilityClass);
+			GrantedAbilities.Add(GameplayAbilityData.InputID,
+				RavenAbilitySystemComponent->GrantAbility(GameplayAbilityData.GameplayAbility));
 		}
 	}
 }
