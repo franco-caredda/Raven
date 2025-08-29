@@ -7,27 +7,17 @@
 
 bool URavenAbilitySystemComponent::TryActivateAbilityByID(EAbilityInputID InputID)
 {
-	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
-	GetAllAbilities(AbilitySpecHandles);
-
-	FGameplayAbilitySpecHandle* AbilitySpecHandle = nullptr;
-	for (FGameplayAbilitySpecHandle CurrentAbilitySpecHandle : AbilitySpecHandles)
+	for (const FGameplayAbilitySpec& CurrentAbilitySpec : GetActivatableAbilities())
 	{
-		FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(CurrentAbilitySpecHandle);
 		UE_LOG(LogTemp, Display, TEXT("Ability Input Id [%d] Status [%d]"),
-			static_cast<int8>(AbilitySpec->InputID), static_cast<int8>(AbilitySpec->IsActive()));
-		if (AbilitySpec && AbilitySpec->InputID == static_cast<int32>(InputID))
+			CurrentAbilitySpec.InputID, CurrentAbilitySpec.IsActive());
+		
+		if (CurrentAbilitySpec.InputID == static_cast<int32>(InputID))
 		{
-			AbilitySpecHandle = &CurrentAbilitySpecHandle;	
-			break;
+			return TryActivateAbility(CurrentAbilitySpec.Handle);
 		}
 	}
-
-	if (AbilitySpecHandle)
-	{
-		return TryActivateAbility(*AbilitySpecHandle);
-	}
-
+	
 	return false;
 }
 
@@ -40,7 +30,7 @@ void URavenAbilitySystemComponent::HoldInputForAbilityByID(EAbilityInputID Input
 
 	// This function might not notify the server that an ability was activated.
 	// Providing an RPC might be needed.
-	AbilityLocalInputPressed(static_cast<uint8>(InputID));
+	TryActivateAbilityByID(InputID);
 }
 
 void URavenAbilitySystemComponent::ReleaseInputForAbilityByID(EAbilityInputID InputID)

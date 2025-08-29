@@ -31,6 +31,8 @@ void FRavenGameplayTagRegistry::InitRegistry()
 		FString("Shielding"));
 	RavenAbilityUse = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Use"),
 		FString("Equipped items"));
+	RavenAbilityBlock = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Block"),
+		FString("Block abilities with this tag"));
 
 	RavenWeaponSword = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Weapon.Sword"),
 		FString("Used on weapon classes to associate assets with the weapon"));
