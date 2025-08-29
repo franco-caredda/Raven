@@ -20,22 +20,22 @@ void UAbilityBufferComponent::ProcessBuffer()
 		return;
 	}
 	
-	const auto& [ID, Timestamp] = Buffer.First();
+	const auto& [InputTag, Timestamp] = Buffer.First();
 
 	float Delta = GetWorld()->GetTimeSeconds() - Timestamp;
 	if (Delta >= BufferWindow)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Input with ID [%d] has been removed from the buffer"),
-			static_cast<int>(ID));
+		UE_LOG(LogTemp, Display, TEXT("Input with ID [%s] has been removed from the buffer"),
+			*InputTag.ToString());
 		Buffer.PopFirst();
 		
 		return;
 	}
 
-	if (OnAbilityInputTryExecute.IsBound() && OnAbilityInputTryExecute.Execute(ID))
+	if (OnAbilityInputTryExecute.IsBound() && OnAbilityInputTryExecute.Execute(InputTag))
 	{
-		UE_LOG(LogTemp, Display, TEXT("Input with ID [%d] has been executed"),
-			static_cast<int>(ID));
+		UE_LOG(LogTemp, Display, TEXT("Input with ID [%s] has been executed"),
+			*InputTag.ToString());
 		Buffer.PopFirst();
 	}
 }
@@ -60,12 +60,12 @@ void UAbilityBufferComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	ClearBufferTimer(DeltaTime);
 }
 
-void UAbilityBufferComponent::RegisterInput(EAbilityInputID InputID)
+void UAbilityBufferComponent::RegisterInput(const FGameplayTag& InputTag)
 {
-	UE_LOG(LogTemp, Display, TEXT("Input with ID [%d] has been pushed to the buffer"),
-			static_cast<int>(InputID));
+	UE_LOG(LogTemp, Display, TEXT("Input with ID [%s] has been pushed to the buffer"),
+			*InputTag.ToString());
 	ClearTimer = 0.0f;
-	Buffer.PushLast(FAbilityInput{ InputID,
+	Buffer.PushLast(FAbilityInput{ InputTag,
 		static_cast<float>(GetWorld()->GetTimeSeconds()) });
 }
 

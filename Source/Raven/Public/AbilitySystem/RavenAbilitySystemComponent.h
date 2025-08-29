@@ -17,11 +17,9 @@ class RAVEN_API URavenAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
 public:
-	bool TryActivateAbilityByID(EAbilityInputID InputID);
+	bool AbilityInputPressed(const FGameplayTag& InputTag);
+	bool AbilityInputReleased(const FGameplayTag& InputTag);
 	
-	void HoldInputForAbilityByID(EAbilityInputID InputID);
-	void ReleaseInputForAbilityByID(EAbilityInputID InputID);
-
 	FGameplayAbilitySpecHandle GrantAbility(const TSubclassOf<UGameplayAbility>& GameplayAbilityClass);
 	void GrantAbilities(const TArray<TSubclassOf<UGameplayAbility>>& GameplayAbilities);
 };

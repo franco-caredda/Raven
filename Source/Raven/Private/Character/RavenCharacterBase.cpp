@@ -8,6 +8,8 @@
 
 #include "DataAsset/RavenGameplayAbilityDataAsset.h"
 
+#include "RavenGameplayTagRegistry.h"
+
 ARavenCharacterBase::ARavenCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -20,12 +22,14 @@ UAbilitySystemComponent* ARavenCharacterBase::GetAbilitySystemComponent() const
 
 void ARavenCharacterBase::LightAttack() const
 {
-	ActivateAbility(GrantedAbilities[EAbilityInputID::AbilityLightAttack]);
+	FRavenGameplayTagRegistry& TagRegistry = FRavenGameplayTagRegistry::Get();
+	ActivateAbility(GrantedAbilities[TagRegistry.GetRavenInputAttackLight()]);
 }
 
 void ARavenCharacterBase::HeavyAttack() const
 {
-	ActivateAbility(GrantedAbilities[EAbilityInputID::AbilityHeavyAttack]);
+	FRavenGameplayTagRegistry& TagRegistry = FRavenGameplayTagRegistry::Get();
+	ActivateAbility(GrantedAbilities[TagRegistry.GetRavenInputAttackHeavy()]);
 }
 
 void ARavenCharacterBase::Block() const
@@ -51,7 +55,7 @@ void ARavenCharacterBase::GrantDefaultAbilities()
 
 		for (const auto& GameplayAbilityData : GameplayAbilityDataSet)
 		{
-			GrantedAbilities.Add(GameplayAbilityData.InputID,
+			GrantedAbilities.Add(GameplayAbilityData.InputTag,
 				RavenAbilitySystemComponent->GrantAbility(GameplayAbilityData.GameplayAbility));
 		}
 	}

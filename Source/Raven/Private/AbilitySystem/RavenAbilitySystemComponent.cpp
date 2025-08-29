@@ -5,42 +5,35 @@
 
 #include "AbilitySystem/GameplayAbility/RavenGameplayAbility.h"
 
-bool URavenAbilitySystemComponent::TryActivateAbilityByID(EAbilityInputID InputID)
+bool URavenAbilitySystemComponent::AbilityInputPressed(const FGameplayTag& InputTag)
 {
-	for (const FGameplayAbilitySpec& CurrentAbilitySpec : GetActivatableAbilities())
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
-		UE_LOG(LogTemp, Display, TEXT("Ability Input Id [%d] Status [%d]"),
-			CurrentAbilitySpec.InputID, CurrentAbilitySpec.IsActive());
-		
-		if (CurrentAbilitySpec.InputID == static_cast<int32>(InputID))
+		if (Spec.GetDynamicSpecSourceTags().HasTagExact(InputTag))
 		{
-			return TryActivateAbility(CurrentAbilitySpec.Handle);
+			AbilitySpecInputPressed(Spec);
+			bool bSuccess = TryActivateAbility(Spec.Handle);
+
+			return bSuccess;
 		}
 	}
-	
+
 	return false;
 }
 
-void URavenAbilitySystemComponent::HoldInputForAbilityByID(EAbilityInputID InputID)
+bool URavenAbilitySystemComponent::AbilityInputReleased(const FGameplayTag& InputTag)
 {
-	if (InputID == EAbilityInputID::None || InputID == EAbilityInputID::MAX)
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
-		return;
+		if (Spec.GetDynamicSpecSourceTags().HasTagExact(InputTag))
+		{
+			AbilitySpecInputReleased(Spec);
+
+			return true;
+		}
 	}
 
-	// This function might not notify the server that an ability was activated.
-	// Providing an RPC might be needed.
-	TryActivateAbilityByID(InputID);
-}
-
-void URavenAbilitySystemComponent::ReleaseInputForAbilityByID(EAbilityInputID InputID)
-{
-	if (InputID == EAbilityInputID::None || InputID == EAbilityInputID::MAX)
-	{
-		return;
-	}
-	
-	AbilityLocalInputReleased(static_cast<uint8>(InputID));
+	return false;
 }
 
 FGameplayAbilitySpecHandle URavenAbilitySystemComponent::GrantAbility(const TSubclassOf<UGameplayAbility>& GameplayAbilityClass)
@@ -49,7 +42,8 @@ FGameplayAbilitySpecHandle URavenAbilitySystemComponent::GrantAbility(const TSub
 
 	if (const URavenGameplayAbility* RavenGameplayAbility = Cast<URavenGameplayAbility>(AbilitySpec.Ability))
 	{
-		AbilitySpec.InputID = static_cast<int32>(RavenGameplayAbility->GetInputID());
+		AbilitySpec.GetDynamicSpecSourceTags()
+				   .AddTag(RavenGameplayAbility->GetInputTag());
 	}	
 
 	return GiveAbility(AbilitySpec);

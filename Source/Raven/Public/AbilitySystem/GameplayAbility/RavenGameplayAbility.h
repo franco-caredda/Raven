@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "RavenGameplayAbilityTypes.h"
 #include "RavenGameplayAbility.generated.h"
 
 struct FGameplayTag;
@@ -17,8 +16,11 @@ class RAVEN_API URavenGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 public:
-	FORCEINLINE EAbilityInputID GetInputID() const { return InputID; }
+	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
+	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
+	
+	FORCEINLINE FGameplayTag GetInputTag() const { return InputTag; }
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
-	EAbilityInputID InputID;
+	FGameplayTag InputTag;
 };

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "AbilitySystem/GameplayAbility/RavenGameplayAbilityTypes.h"
+#include "GameplayTagContainer.h"
 #include "RavenGameplayAbilityDataAsset.generated.h"
 
 class UInputAction;
@@ -19,7 +20,7 @@ struct FRavenGameplayAbilityData
 	TSubclassOf<URavenGameplayAbility> GameplayAbility;
 	
 	UPROPERTY(EditAnywhere, Category="Input Configuration")
-	EAbilityInputID InputID;
+	FGameplayTag InputTag;
 	
 	UPROPERTY(EditAnywhere, Category="Input Configuration")
 	UInputAction* InputAction;

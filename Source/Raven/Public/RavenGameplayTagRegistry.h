@@ -40,6 +40,12 @@ public:
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven,  Ability, Attack, Heavy)
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Roll)
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Sprint)
+
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Input, Attack, Light)
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Input, Attack, Heavy)
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Input, Roll)
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Input, Sprint)
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Input, Consume)
 	
 	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Effect, Drain)
 private:

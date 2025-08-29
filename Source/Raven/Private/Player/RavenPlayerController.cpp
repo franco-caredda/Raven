@@ -40,7 +40,7 @@ void ARavenPlayerController::BeginPlay()
 	AbilitySystemComponent =
 		Cast<URavenAbilitySystemComponent>(aPlayerState->GetAbilitySystemComponent());
 	AbilityBufferComponent->OnAbilityInputTryExecute.BindUObject(AbilitySystemComponent,
-		&URavenAbilitySystemComponent::TryActivateAbilityByID);
+		&URavenAbilitySystemComponent::AbilityInputPressed);
 }
 
 void ARavenPlayerController::SetupInputComponent()
@@ -62,8 +62,6 @@ void ARavenPlayerController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(GameplayAbilityData.InputAction, ETriggerEvent::Started, this,
 			&ARavenPlayerController::OnAbilityActionStarted, &GameplayAbilityData);
-		EnhancedInputComponent->BindAction(GameplayAbilityData.InputAction, ETriggerEvent::Triggered, this,
-			&ARavenPlayerController::OnAbilityActionTriggered, &GameplayAbilityData);
 		EnhancedInputComponent->BindAction(GameplayAbilityData.InputAction, ETriggerEvent::Completed, this,
 			&ARavenPlayerController::OnAbilityActionCompleted, &GameplayAbilityData);
 	}
@@ -106,17 +104,13 @@ void ARavenPlayerController::OnInteractActionTriggered(const FInputActionValue& 
 void ARavenPlayerController::OnAbilityActionStarted(const FRavenGameplayAbilityData* AbilityData)
 {
 	AbilityBufferComponent->ExecuteOrRegisterInput(AbilitySystemComponent.Get(),
-			*AbilityData, &URavenAbilitySystemComponent::HoldInputForAbilityByID);
-}
-
-void ARavenPlayerController::OnAbilityActionTriggered(const FRavenGameplayAbilityData* AbilityData)
-{
+			*AbilityData, &URavenAbilitySystemComponent::AbilityInputPressed);
 }
 
 void ARavenPlayerController::OnAbilityActionCompleted(const FRavenGameplayAbilityData* AbilityData)
 {
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->ReleaseInputForAbilityByID(AbilityData->InputID);
+		AbilitySystemComponent->AbilityInputReleased(AbilityData->InputTag);
 	}
 }

@@ -10,14 +10,14 @@
 #include "AbilityBufferComponent.generated.h"
 
 
-DECLARE_DELEGATE_RetVal_OneParam(bool, FOnAbilityInputTryExecuteSignature, EAbilityInputID);
+DECLARE_DELEGATE_RetVal_OneParam(bool, FOnAbilityInputTryExecuteSignature, const FGameplayTag&);
 
 USTRUCT()
 struct FAbilityInput
 {
 	GENERATED_BODY()
 
-	EAbilityInputID ID;
+	FGameplayTag InputTag;
 	float Timestamp;
 };
 
@@ -32,7 +32,7 @@ class RAVEN_API UAbilityBufferComponent : public UActorComponent
 	GENERATED_BODY()
 public:
 	template<typename UserClass, typename... TArgs>
-	using TExecuteSignature = void(UserClass::*)(TArgs...);
+	using TExecuteSignature = bool(UserClass::*)(TArgs...);
 	
 	UAbilityBufferComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -46,17 +46,17 @@ public:
 	 */
 	template<typename UserClass>
 	void ExecuteOrRegisterInput(UserClass* Class, const FRavenGameplayAbilityData& AbilityData,
-		TExecuteSignature<UserClass, EAbilityInputID> Signature)
+		TExecuteSignature<UserClass, const FGameplayTag&> Signature)
 	{
 		if (AbilityData.InputMode == EAbilityInputMode::None)
 		{
-			UE_LOG(LogTemp, Display, TEXT("Input with ID [%d] has been directly executed"),
-	static_cast<int>(AbilityData.InputMode));
-			(Class->*Signature)(AbilityData.InputID);
+			UE_LOG(LogTemp, Display, TEXT("Input with ID [%s] has been directly executed"),
+				*AbilityData.InputTag.ToString());
+			(Class->*Signature)(AbilityData.InputTag);
 			return;
 		}
 		
-		RegisterInput(AbilityData.InputID);
+		RegisterInput(AbilityData.InputTag);
 	}
 protected:
 	virtual void BeginPlay() override;
@@ -64,7 +64,7 @@ private:
 	void ProcessBuffer();
 	void ClearBufferTimer(float DeltaTime);
 	
-	void RegisterInput(EAbilityInputID InputID);
+	void RegisterInput(const FGameplayTag& InputTag);
 public:
 	FOnAbilityInputTryExecuteSignature OnAbilityInputTryExecute;
 protected:

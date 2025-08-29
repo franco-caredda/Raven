@@ -34,7 +34,6 @@ protected:
 	void OnInteractActionTriggered(const FInputActionValue& Value);
 	
 	void OnAbilityActionStarted(const FRavenGameplayAbilityData* AbilityData);
-	void OnAbilityActionTriggered(const FRavenGameplayAbilityData* AbilityData);
 	void OnAbilityActionCompleted(const FRavenGameplayAbilityData* AbilityData);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")

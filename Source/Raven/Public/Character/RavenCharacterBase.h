@@ -7,7 +7,9 @@
 #include "AbilitySystemInterface.h"
 #include "Interface/CombatInterface.h"
 #include "GameplayAbilitySpecHandle.h"
+#include "GameplayTagContainer.h"
 #include "RavenCharacterBase.generated.h"
+
 
 class URavenGameplayAbilityDataAsset;
 class UGameplayEffect;
@@ -61,5 +63,5 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
 private:
-	TMap<EAbilityInputID, FGameplayAbilitySpecHandle> GrantedAbilities;
+	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GrantedAbilities;
 };
