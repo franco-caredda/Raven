@@ -36,21 +36,12 @@ public:
 	
 	void InitRegistry();
 
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Jump)
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Dodge)
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, LightAttack)
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, HeavyAttack)
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Shield)
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Use)
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Block)
-
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Weapon, Sword)
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Weapon, Axe)
-
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Effect, Ability, Cancelable)
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Effect, Drain, Stamina)
-
-	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven, Ability, Input, Buffered)
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven,  Ability, Attack, Light)
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_FourParams(Raven,  Ability, Attack, Heavy)
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Roll)
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Ability, Sprint)
+	
+	DEFINE_GAMEPLAY_TAG_AND_HELPERS_ThreeParams(Raven, Effect, Drain)
 private:
 	FRavenGameplayTagRegistry();
 

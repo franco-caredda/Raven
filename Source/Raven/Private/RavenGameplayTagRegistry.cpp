@@ -18,31 +18,16 @@ FRavenGameplayTagRegistry& FRavenGameplayTagRegistry::Get() noexcept
 void FRavenGameplayTagRegistry::InitRegistry()
 {
 	UGameplayTagsManager& GameplayTagsManager = UGameplayTagsManager::Get();
-	
-	RavenAbilityJump = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Jump"),
-		FString("Jump ability"));
-	RavenAbilityDodge = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Dodge"),
-		FString("Dodge ability"));
-	RavenAbilityLightAttack = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.LightAttack"),
-		FString("Light attack"));
-	RavenAbilityHeavyAttack = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.HeavyAttack"),
-		FString("Heavy attack"));
-	RavenAbilityShield = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Shield"),
-		FString("Shielding"));
-	RavenAbilityUse = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Use"),
-		FString("Equipped items"));
-	RavenAbilityBlock = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Block"),
-		FString("Block abilities with this tag"));
 
-	RavenWeaponSword = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Weapon.Sword"),
-		FString("Used on weapon classes to associate assets with the weapon"));
-	RavenWeaponAxe = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Weapon.Axe"),
-		FString("Used on weapon classes to associate assets with the weapon"));
+	RavenAbilityAttackLight = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Attack.Light"),
+		FString("Tells the ability system that this ability is a light attack"));
+	RavenAbilityAttackHeavy = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Attack.Heavy"),
+	FString("Tells the ability system that this ability is a heavy attack"));
+	RavenAbilityRoll = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Roll"),
+		FString("Tells the ability system that this ability is a roll"));
+	RavenAbilityRoll = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Sprint"),
+		FString("Tells the ability system that this ability is sprint"));
 
-	RavenEffectDrainStamina = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Effect.Drain.Stamina"),
-		FString("Used in the effects that have to block stamina restoring and have a continuous cost"));
-	RavenEffectAbilityCancelable = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Effect.Ability.Cancelable"),
-		FString("Used in Abilities' CancelAbilitiesWithTag container to cancel abilities with this tag"));
-	RavenAbilityInputBuffered = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Ability.Input.Buffered"),
-		FString("Indicates whether this ability is put into the buffer or no"));
+	RavenEffectDrain = GameplayTagsManager.AddNativeGameplayTag(FName("Raven.Effect.Drain"),
+		FString("This tags activates infinite draining effects"));
 }

@@ -8,8 +8,6 @@
 void UAbilityTask_LoadMontage::Activate()
 {
 	Super::Activate();
-
-	Ability->OnGameplayAbilityCancelled.AddUObject(this, &UAbilityTask_LoadMontage::OnNotifyMontageLoadCanceled);
 	
 	if (Montage.IsValid())
 	{

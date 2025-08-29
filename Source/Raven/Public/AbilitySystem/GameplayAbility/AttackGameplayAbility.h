@@ -25,20 +25,24 @@ private:
 	void OnFailed();
 
 	UFUNCTION()
-	void OnCanceled();
+	void OnMontageCompleted();
 
 	UFUNCTION()
-	void OnMontageCompleted();
+	void OnResetSectionTimer();
 	
 	const FMontageDefinition* GetAssetDefinition(AActor* AvatarActor) const;
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag ActionTag;
+
+	UPROPERTY(EditDefaultsOnly)
+	float ResetSectionAfterAbilityCompletedDelay = 0.25f;
 private:
 	const FMontageDefinition* AssetDefinition;
+	FTimerHandle ResetSectionTimer;
+
+	int CurrentSection = -1;
 	
 	UPROPERTY()
 	TObjectPtr<UAnimMontage> SolvedAttackAnimMontage;
-
-	int CurrentSection = -1;
 };
