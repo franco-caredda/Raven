@@ -15,7 +15,7 @@ The project uses these assets:
 - [X] Input handling for abilities.
 - [X] Input buffering.
 - [X] On-demand asset loading.
-- [ ] Weapon system.
+- [X] Weapon system.
 - [ ] Combat system using GAS.
 - [ ] Inventory.
 - [ ] UI.
