@@ -5,17 +5,20 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "Interface/CombatInterface.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "RavenCharacterBase.generated.h"
 
+class URavenGameplayAbilityDataAsset;
 class UGameplayEffect;
 class URavenAttributeSet;
 class UAttributeSet;
 class UGameplayAbility;
 
-struct FGameplayAbilitySpecHandle;
+enum class EAbilityInputID : uint8;
 
 UCLASS(Abstract)
-class RAVEN_API ARavenCharacterBase : public ACharacter, public IAbilitySystemInterface
+class RAVEN_API ARavenCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -23,6 +26,11 @@ public:
 	ARavenCharacterBase();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	virtual void LightAttack() const override;
+	virtual void HeavyAttack() const override;
+	virtual void Block() const override;
+	virtual void Parry() const override;
 protected:
 	void GrantDefaultAbilities();
 	
@@ -30,6 +38,7 @@ protected:
 	void InitEffects();
 private:
 	void ApplyDefaultEffects();
+	void ActivateAbility(FGameplayAbilitySpecHandle AbilitySpecHandle) const;
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Ability System")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
@@ -38,11 +47,11 @@ protected:
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System")
-	TArray<TSubclassOf<UGameplayAbility>> DefaultGameplayAbilities;
-
+	TObjectPtr<URavenGameplayAbilityDataAsset> GameplayAbilityDataAsset;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System")
 	TArray<TSubclassOf<UGameplayEffect>> DefaultGameplayEffects;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributesClass;
 
@@ -51,4 +60,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability System|Attribute Set")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesClass;
+private:
+	TMap<EAbilityInputID, FGameplayAbilitySpecHandle> GrantedAbilities;
 };

@@ -6,6 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/RavenAbilitySystemComponent.h"
 
+#include "DataAsset/RavenGameplayAbilityDataAsset.h"
+
 ARavenCharacterBase::ARavenCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -14,6 +16,24 @@ ARavenCharacterBase::ARavenCharacterBase()
 UAbilitySystemComponent* ARavenCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void ARavenCharacterBase::LightAttack() const
+{
+	ActivateAbility(GrantedAbilities[EAbilityInputID::AbilityLightAttack]);
+}
+
+void ARavenCharacterBase::HeavyAttack() const
+{
+	ActivateAbility(GrantedAbilities[EAbilityInputID::AbilityHeavyAttack]);
+}
+
+void ARavenCharacterBase::Block() const
+{
+}
+
+void ARavenCharacterBase::Parry() const
+{
 }
 
 void ARavenCharacterBase::GrantDefaultAbilities()
@@ -26,7 +46,14 @@ void ARavenCharacterBase::GrantDefaultAbilities()
 	if (URavenAbilitySystemComponent* RavenAbilitySystemComponent =
 		Cast<URavenAbilitySystemComponent>(AbilitySystemComponent))
 	{
-		RavenAbilitySystemComponent->GrantAbilities(DefaultGameplayAbilities);
+		const TArray<FRavenGameplayAbilityData>& GameplayAbilityDataSet =
+			GameplayAbilityDataAsset->GetGameplayAbilityDataSet();
+
+		for (const auto& GameplayAbilityData : GameplayAbilityDataSet)
+		{
+			GrantedAbilities.Add(GameplayAbilityData.InputID,
+				RavenAbilitySystemComponent->GrantAbility(GameplayAbilityData.GameplayAbility));
+		}
 	}
 }
 
@@ -50,6 +77,14 @@ void ARavenCharacterBase::ApplyDefaultEffects()
 	for (TSubclassOf<UGameplayEffect> GameplayEffectClass : DefaultGameplayEffects)
 	{
 		ApplyEffect(GameplayEffectClass);
+	}
+}
+
+void ARavenCharacterBase::ActivateAbility(FGameplayAbilitySpecHandle AbilitySpecHandle) const
+{
+	if (AbilitySpecHandle.IsValid())
+	{
+		AbilitySystemComponent->TryActivateAbility(AbilitySpecHandle);
 	}
 }
 

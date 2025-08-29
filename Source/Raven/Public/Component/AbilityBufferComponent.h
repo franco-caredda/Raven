@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Input/AbilityInputMappingDataAsset.h"
+#include "AbilitySystem/GameplayAbility/RavenGameplayAbilityTypes.h"
+#include "DataAsset/RavenGameplayAbilityDataAsset.h"
 #include "Containers/Deque.h"
 #include "AbilityBufferComponent.generated.h"
 
@@ -40,27 +41,22 @@ public:
 	 * 
 	 * @tparam UserClass Class the Signature method is bound to
 	 * @param Class The instance of Class the Signature method is bound to
-	 * @param AbilityInputMapping Input mapping that should be buffered. NOTICE: if InputMode is set to None, then the Signature callback will be called directly
+	 * @param AbilityData Input mapping that should be buffered. NOTICE: if InputMode is set to None, then the Signature callback will be called directly
 	 * @param Signature a pointer to the method of the Class instance that should be called at the beginning before buffering.
 	 */
 	template<typename UserClass>
-	void ExecuteOrRegisterInput(UserClass* Class, FAbilityInputMapping AbilityInputMapping,
+	void ExecuteOrRegisterInput(UserClass* Class, const FRavenGameplayAbilityData& AbilityData,
 		TExecuteSignature<UserClass, EAbilityInputID> Signature)
 	{
-		if (AbilityInputMapping.InputMode == EInputMode::None)
+		if (AbilityData.InputMode == EAbilityInputMode::None)
 		{
-			(Class->*Signature)(AbilityInputMapping.MappingID);
+			UE_LOG(LogTemp, Display, TEXT("Input with ID [%d] has been directly executed"),
+	static_cast<int>(AbilityData.InputMode));
+			(Class->*Signature)(AbilityData.InputID);
 			return;
 		}
 		
-		if (bRegister)
-		{
-			RegisterInput(AbilityInputMapping.MappingID);
-			return;
-		}
-
-		(Class->*Signature)(AbilityInputMapping.MappingID);
-		bRegister = true; 
+		RegisterInput(AbilityData.InputID);
 	}
 protected:
 	virtual void BeginPlay() override;
@@ -87,5 +83,4 @@ private:
 	TDeque<FAbilityInput> Buffer;
 
 	float ClearTimer = 0.0f;
-	bool bRegister = false;
 };

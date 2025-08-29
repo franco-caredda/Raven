@@ -8,14 +8,13 @@
 
 class UAbilityBufferComponent;
 class URavenAbilitySystemComponent;
+class URavenGameplayAbilityDataAsset;
 class UInputMappingContext;
 class UInputAction;
-class UAbilityInputMappingDataAsset;
 
 struct FInputActionValue;
 struct FGameplayTag;
-
-struct FAbilityInputMapping;
+struct FRavenGameplayAbilityData;
 
 /**
  * 
@@ -29,27 +28,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
-
-	UFUNCTION()
-	void OnMoveActionTriggered(const FInputActionValue& Value);
-
-	UFUNCTION()
-	void OnLookActionTriggered(const FInputActionValue& Value);
-
-	UFUNCTION()
-	void OnJumpActionStarted(const FInputActionValue& Value);
-
-	UFUNCTION()
-	void OnJumpActionCompleted(const FInputActionValue& Value);
-
-	UFUNCTION()
-	void OnAbilityActionStarted(FAbilityInputMapping InputMapping);
-
-	UFUNCTION()
-	void OnAbilityActionTriggered(FAbilityInputMapping InputMapping);
 	
-	UFUNCTION()
-	void OnAbilityActionCompleted(FAbilityInputMapping InputMapping);
+	void OnMoveActionTriggered(const FInputActionValue& Value);
+	void OnLookActionTriggered(const FInputActionValue& Value);
+	void OnInteractActionTriggered(const FInputActionValue& Value);
+	
+	void OnAbilityActionStarted(const FRavenGameplayAbilityData* AbilityData);
+	void OnAbilityActionTriggered(const FRavenGameplayAbilityData* AbilityData);
+	void OnAbilityActionCompleted(const FRavenGameplayAbilityData* AbilityData);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
@@ -59,12 +45,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input|Actions")
 	TObjectPtr<UInputAction> LookAction;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category="Input|Actions")
-	TObjectPtr<UInputAction> JumpAction;
+	TObjectPtr<UInputAction> InteractAction;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input|Actions|Abilities")
-	TObjectPtr<UAbilityInputMappingDataAsset> AbilityInputMapping;
+	TObjectPtr<URavenGameplayAbilityDataAsset> AbilityInputMapping;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UAbilityBufferComponent> AbilityBufferComponent;

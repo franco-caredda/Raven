@@ -6,16 +6,16 @@
 
 #include "AbilitySystem/RavenAbilitySystemComponent.h"
 
+#include "Character/RavenCharacterPlayable.h"
+
+#include "DataAsset/RavenGameplayAbilityDataAsset.h"
+
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
-#include "GameFramework/Character.h"
-
 #include "InputAction.h"
 #include "InputActionValue.h"
-
-#include "Input/AbilityInputMappingDataAsset.h"
-#include "Input/AbilityBufferComponent.h"
+#include "Component/AbilityBufferComponent.h"
 
 
 ARavenPlayerController::ARavenPlayerController()
@@ -54,14 +54,18 @@ void ARavenPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
 		&ARavenPlayerController::OnLookActionTriggered);
 
-	for (const FAbilityInputMapping& InputMapping : AbilityInputMapping->GetInputMappings())
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this,
+		&ARavenPlayerController::OnInteractActionTriggered);
+
+	for (const FRavenGameplayAbilityData& GameplayAbilityData :
+		AbilityInputMapping->GetGameplayAbilityDataSet())
 	{
-		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Started, this,
-			&ARavenPlayerController::OnAbilityActionStarted, InputMapping);
-		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Triggered, this,
-			&ARavenPlayerController::OnAbilityActionTriggered, InputMapping);
-		EnhancedInputComponent->BindAction(InputMapping.InputAction, ETriggerEvent::Completed, this,
-			&ARavenPlayerController::OnAbilityActionCompleted, InputMapping);
+		EnhancedInputComponent->BindAction(GameplayAbilityData.InputAction, ETriggerEvent::Started, this,
+			&ARavenPlayerController::OnAbilityActionStarted, &GameplayAbilityData);
+		EnhancedInputComponent->BindAction(GameplayAbilityData.InputAction, ETriggerEvent::Triggered, this,
+			&ARavenPlayerController::OnAbilityActionTriggered, &GameplayAbilityData);
+		EnhancedInputComponent->BindAction(GameplayAbilityData.InputAction, ETriggerEvent::Completed, this,
+			&ARavenPlayerController::OnAbilityActionCompleted, &GameplayAbilityData);
 	}
 }
 
@@ -90,41 +94,29 @@ void ARavenPlayerController::OnLookActionTriggered(const FInputActionValue& Valu
 	AddYawInput(Direction.X);
 }
 
-void ARavenPlayerController::OnJumpActionStarted(const FInputActionValue& Value)
+void ARavenPlayerController::OnInteractActionTriggered(const FInputActionValue& Value)
 {
-	if (ACharacter* aCharacter = GetPawn<ACharacter>())
+	if (ARavenCharacterPlayable* aCharacter = GetPawn<ARavenCharacterPlayable>())
 	{
-		aCharacter->Jump();
-	}
-}
-
-void ARavenPlayerController::OnJumpActionCompleted(const FInputActionValue& Value)
-{
-	if (ACharacter* aCharacter = GetPawn<ACharacter>())
-	{
-		aCharacter->StopJumping();
+		aCharacter->TryInteract();
 	}
 }
 
 // Notice: if an action has some modifiers on it, this method is not a suitable place for the ability activation 
-void ARavenPlayerController::OnAbilityActionStarted(FAbilityInputMapping InputMapping)
+void ARavenPlayerController::OnAbilityActionStarted(const FRavenGameplayAbilityData* AbilityData)
 {
-//	AbilitySystemComponent->HoldInputForAbilityByID(InputID);
+	AbilityBufferComponent->ExecuteOrRegisterInput(AbilitySystemComponent.Get(),
+			*AbilityData, &URavenAbilitySystemComponent::HoldInputForAbilityByID);
 }
 
-void ARavenPlayerController::OnAbilityActionTriggered(FAbilityInputMapping InputMapping)
+void ARavenPlayerController::OnAbilityActionTriggered(const FRavenGameplayAbilityData* AbilityData)
+{
+}
+
+void ARavenPlayerController::OnAbilityActionCompleted(const FRavenGameplayAbilityData* AbilityData)
 {
 	if (AbilitySystemComponent)
 	{
-		AbilityBufferComponent->ExecuteOrRegisterInput(AbilitySystemComponent.Get(),
-			InputMapping, &URavenAbilitySystemComponent::HoldInputForAbilityByID);
-	}
-}
-
-void ARavenPlayerController::OnAbilityActionCompleted(FAbilityInputMapping InputMapping)
-{
-	if (AbilitySystemComponent)
-	{
-		AbilitySystemComponent->ReleaseInputForAbilityByID(InputMapping.MappingID);
+		AbilitySystemComponent->ReleaseInputForAbilityByID(AbilityData->InputID);
 	}
 }

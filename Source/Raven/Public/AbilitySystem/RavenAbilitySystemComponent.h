@@ -22,5 +22,6 @@ public:
 	void HoldInputForAbilityByID(EAbilityInputID InputID);
 	void ReleaseInputForAbilityByID(EAbilityInputID InputID);
 
+	FGameplayAbilitySpecHandle GrantAbility(const TSubclassOf<UGameplayAbility>& GameplayAbilityClass);
 	void GrantAbilities(const TArray<TSubclassOf<UGameplayAbility>>& GameplayAbilities);
 };

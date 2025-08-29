@@ -6,10 +6,16 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AttributeSet/RavenAttributeSet.h"
 
+#include "Actor/Weapon/WeaponBase.h"
+
 #include "Camera/CameraComponent.h"
+#include "Component/WeaponHandlerComponent.h"
+
+#include "Components/SphereComponent.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Interface/Interactable.h"
 
 #include "Player/RavenPlayerState.h"
 
@@ -28,6 +34,12 @@ ARavenCharacterPlayable::ARavenCharacterPlayable()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	InteractionVolume = CreateDefaultSubobject<USphereComponent>(TEXT("InteractionVolume"));
+	InteractionVolume->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	InteractionVolume->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	WeaponHandlerComponent = CreateDefaultSubobject<UWeaponHandlerComponent>(TEXT("WeaponHandlerComponent"));
 }
 
 void ARavenCharacterPlayable::PossessedBy(AController* NewController)
@@ -58,8 +70,57 @@ void ARavenCharacterPlayable::Tick(float DeltaTime)
 	CharacterMovementComponent->bOrientRotationToMovement = CharacterMovementComponent->IsMovingOnGround();
 }
 
+UWeaponHandlerComponent* ARavenCharacterPlayable::GetWeaponHandlerComponent() const
+{
+	return WeaponHandlerComponent;
+}
+
+void ARavenCharacterPlayable::TryInteract()
+{
+	if (Interactable)
+	{
+		IInteractable::Execute_Interact(Interactable.GetObject(), this);
+	}
+}
+
+void ARavenCharacterPlayable::BeginPlay()
+{
+	Super::BeginPlay();
+
+	InteractionVolume->OnComponentBeginOverlap.AddDynamic(this,
+		&ARavenCharacterPlayable::OnInteractionVolumeBeginOverlap);
+	InteractionVolume->OnComponentEndOverlap.AddDynamic(this,
+		&ARavenCharacterPlayable::OnInteractionVolumeEndOverlap);
+	WeaponHandlerComponent->OnRightHandWeaponChanged.AddDynamic(this,
+		&ARavenCharacterPlayable::OnRightHandWeaponChanged);
+}
+
 void ARavenCharacterPlayable::OnMovementSpeedChanged(const FOnAttributeChangeData& AttributeChangeData)
 {
 	const float NewMovementSpeed = AttributeChangeData.NewValue;
 	CastChecked<UCharacterMovementComponent>(GetMovementComponent())->MaxWalkSpeed = NewMovementSpeed;
+}
+
+void ARavenCharacterPlayable::OnInteractionVolumeBeginOverlap(UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	Interactable = OtherActor;
+}
+
+void ARavenCharacterPlayable::OnInteractionVolumeEndOverlap(UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	Interactable = nullptr;
+}
+
+void ARavenCharacterPlayable::OnRightHandWeaponChanged(AWeaponBase* OldWeapon, AWeaponBase* NewWeapon)
+{
+	if (OldWeapon)
+	{
+		OldWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	}
+
+	NewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+		WeaponAttachmentSocket);
 }
